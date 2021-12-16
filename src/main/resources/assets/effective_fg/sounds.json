@@ -1,0 +1,31 @@
+{
+  "ambience.waterfall": {
+    "sounds": [
+      "ambient/weather/rain1",
+      "ambient/weather/rain2",
+      "ambient/weather/rain3",
+      "ambient/weather/rain4",
+      "ambient/weather/rain5",
+      "ambient/weather/rain6",
+      "ambient/weather/rain7",
+      "ambient/weather/rain8"
+    ],
+    "subtitle": "effective_fg.subtitles.ambience.waterfall"
+  },
+  "ambience.splash": {
+    "sounds": [
+      "effective_fg:splash_0",
+      "effective_fg:splash_1"
+    ],
+    "subtitle": "effective_fg.subtitles.ambience.splash"
+  },
+  "ambience.small_splash": {
+    "sounds": [
+      "effective_fg:small_splash_0",
+      "effective_fg:small_splash_1",
+      "effective_fg:small_splash_2",
+      "effective_fg:small_splash_3"
+    ],
+    "subtitle": "effective_fg.subtitles.ambience.small_splash"
+  }
+}

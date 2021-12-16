@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "com.bottomtextdanny.effective_fg.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "minVersion": "0.8",
+  "refmap": "effective_fg.mixins.refmap.json",
+  "client": [
+    "client.BlockMixin",
+    "client.BlockRenderManagerMixin",
+    "client.EntityMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

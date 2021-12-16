@@ -1,0 +1,26 @@
+
+modLoader="javafml"
+loaderVersion="[38,)"
+license="All rights reserved"
+[[mods]]
+modId="effective_fg"
+version="1.0"
+displayName="Effective (Forge)"
+logoFile="effective.png"
+credits="Thanks to doctor4t for letting me port this mod to forge."
+authors="doctor4t, BottomTextDanny"
+description='''
+A client-side mod adding ambient and environmental interaction effects to enhance immersion.
+'''
+[[dependencies.effective_fg]]
+    modId="forge" #mandatory
+    mandatory=true #mandatory
+    versionRange="[38,)" #mandatory
+    ordering="NONE"
+    side="BOTH"
+[[dependencies.effective_fg]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.18,1.19)"
+    ordering="NONE"
+    side="BOTH"
