@@ -22,8 +22,8 @@ public class SplashBottomModel extends ParticleModel {
         this.texHeight = 28;
 
         this.splash = new ParticleVoxel(this);
-        this.splash.setPos(6.0F, 12.0F, -6.0F);
-        this.splash.texOffs(0, 0).addBox(-12.0F, 0.0F, 0.0F, 0.0F, 0.0F, 12.0F, 0.0F, false);
+        this.splash.setPos(6.0F, 0.0F, -6.0F);
+        this.splash.texOffs(0, 0).addBox(-12.0F, 0.0F, 0.0F, 12.0F, 0.0F, 12.0F, 0.0F, false);
     }
 
 
