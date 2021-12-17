@@ -14,7 +14,7 @@ public class EffectiveFg {
     public static final int WATERFALL_PARTICLE_SOUND_RARITY = 9;
     public static final float FLOWING_WATER_SHOULD_BEHAVE_AT_HEIGHT = 0.77F;
     public static final int FLOWING_WATER_DROP_RARITY = 50;
-    public static final float SPLASH_WATER_VOLUME_FACTOR = 8.0F;
+    public static final float SPLASH_WATER_VOLUME_FACTOR = 10.0F;
     public static final float SMALL_SPLASH_WATER_VOLUME_FACTOR = 5.0F;
     public static final float SPLASH_WATER_DROPLET_FACTOR = 25.0F;
     public static final float SPLASH_SPEED_WATER_THRESHOLD = 0.1F;
