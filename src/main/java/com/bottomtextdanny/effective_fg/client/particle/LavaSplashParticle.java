@@ -88,13 +88,12 @@ public class LavaSplashParticle extends TextureSheetParticle {
     @Override
     public void render(VertexConsumer vertexConsumer, Camera camera, float tickDelta) {
         int light = 15728880;
+      final float yOffset = 0.001F;
         Vec3 vec3d = camera.getPosition();
         float f = (float) (Mth.lerp(tickDelta, this.xo, this.x) - vec3d.x());
-        float g = (float) (Mth.lerp(tickDelta, this.yo, this.y) - vec3d.y());
+        float g = (float) (Mth.lerp(tickDelta, this.yo, this.y) - vec3d.y()) + yOffset;
         float h = (float) (Mth.lerp(tickDelta, this.zo, this.z) - vec3d.z());
-
-
-
+        PoseStack matrixStack = new PoseStack();
         if (age <= this.wave1End) {
             int frameForFirstSplash = Math.round(((float) this.age / (float) this.wave1End) * 12);
 
@@ -105,23 +104,16 @@ public class LavaSplashParticle extends TextureSheetParticle {
             float minV = this.getV0();
             float maxV = this.getV1();
 
-            PoseStack matrixStack = new PoseStack();
+            matrixStack.pushPose();
             matrixStack.translate(f, g, h);
             matrixStack.scale(widthMultiplier, -heightMultiplier, widthMultiplier);
-            matrixStack.translate(0, -0.7465, 0);
-
             WAVE_MODEL.renderToBuffer(matrixStack, vertexConsumer, light, minU, maxU, minV, maxV, 1.0F, 1.0F, 1.0F, 1.0F);
-
-//            matrixStack = new PoseStack();
-//            matrixStack.translate(f, g, h);
-//            matrixStack.scale(widthMultiplier * 1.2F, heightMultiplier, widthMultiplier * 1.2F);
-//            matrixStack.translate(0, -0.7465, 0);
-//
-//            WAVE_BOTTOM_MODEL.renderToBuffer(matrixStack, vertexConsumer, light, minU, maxU, minV, maxV, 1.0F, 1.0F, 1.0F, 1.0F);
+            matrixStack.popPose();
         }
 
         if (age >= this.wave2Start) {
             int frameForSecondSplash = Math.round(((float) (this.age - wave2Start) / (float) (this.wave2End - this.wave2Start)) * 12);
+
             setSprite(frameForSecondSplash);
 
             float minU = this.getU0();
@@ -129,19 +121,9 @@ public class LavaSplashParticle extends TextureSheetParticle {
             float minV = this.getV0();
             float maxV = this.getV1();
 
-            PoseStack matrixStack = new PoseStack();
             matrixStack.translate(f, g, h);
             matrixStack.scale(widthMultiplier * 0.5f, -heightMultiplier * 2, widthMultiplier * 0.5f);
-            matrixStack.translate(0, -0.7465, 0);
-
             WAVE_MODEL.renderToBuffer(matrixStack, vertexConsumer, light, minU, maxU, minV, maxV, 1.0F, 1.0F, 1.0F, 1.0F);
-
-//            matrixStack = new PoseStack();
-//            matrixStack.translate(f, g, h);
-//            matrixStack.scale(widthMultiplier * 0.6f, heightMultiplier * 2, widthMultiplier * 0.6f);
-//            matrixStack.translate(0, -0.7465, 0);
-//
-//            WAVE_BOTTOM_MODEL.renderToBuffer(matrixStack, vertexConsumer, light, minU, maxU, minV, maxV, 1.0F, 1.0F, 1.0F, 1.0F);
         }
     }
 
