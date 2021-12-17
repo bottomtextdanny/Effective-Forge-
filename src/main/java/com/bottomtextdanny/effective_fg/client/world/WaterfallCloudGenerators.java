@@ -4,6 +4,7 @@ import com.bottomtextdanny.effective_fg.EffectiveFg;
 import com.bottomtextdanny.effective_fg.registry.ParticleRegistry;
 import com.bottomtextdanny.effective_fg.registry.SoundEventRegistry;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
@@ -12,15 +13,14 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
+import java.util.Set;
 
 public class WaterfallCloudGenerators {
-    public static final List<WaterfallCloudGenerator> generators = Lists.newLinkedList();
+    public static final Set<WaterfallCloudGenerator> generators = Sets.newHashSet();
     private static boolean resolvingWaterfalls;
 
     public static void addGenerator(Level level, BlockPos blockPos) {
-        if (!generators.contains(new WaterfallCloudGenerator(level, blockPos))) {
-            generators.add(new WaterfallCloudGenerator(level, blockPos));
-        }
+        generators.add(new WaterfallCloudGenerator(level, blockPos));
     }
 
     public static void removeGenerator(Level level, BlockPos blockPos) {
@@ -28,15 +28,12 @@ public class WaterfallCloudGenerators {
     }
 
     public static void tick() {
-        if (Minecraft.getInstance().player == null) return;
         resolvingWaterfalls = true;
         List<WaterfallCloudGenerator> generatorsToRemove = Lists.newLinkedList();
-
         List<WaterfallCloudGenerator> generatorsInDistance = generators.stream().filter(waterfallCloudGenerator -> waterfallCloudGenerator.level == Minecraft.getInstance().level && Math.sqrt(waterfallCloudGenerator.blockPos.distSqr(Minecraft.getInstance().player.blockPosition())) <= Minecraft.getInstance().options.renderDistance * 8f).toList();
 
         int counter = 0;
         for (WaterfallCloudGenerator waterfallCloudGenerator: generatorsInDistance) {
-
             Level level = waterfallCloudGenerator.level;
             BlockPos blockPos = waterfallCloudGenerator.blockPos;
 
