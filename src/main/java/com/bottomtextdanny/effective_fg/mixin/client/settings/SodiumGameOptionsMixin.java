@@ -47,6 +47,7 @@ public class SodiumGameOptionsMixin
                         },
                         (options) -> EffectiveConfig.enableEffects.get())
                 .setImpact(OptionImpact.LOW)
+                .setFlags(OptionFlag.REQUIRES_RENDERER_RELOAD)
                 .build();
 
         groups.add(OptionGroup

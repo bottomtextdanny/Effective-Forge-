@@ -48,6 +48,9 @@ public class WaterfallCloudGenerators {
     }
 
     public static void tick() {
+        if (Minecraft.getInstance().player == null)
+            return;
+
         resolvingWaterfalls = true;
         List<WaterfallCloudGenerator> generatorsToRemove = Lists.newLinkedList();
         List<WaterfallCloudGenerator> generatorsInDistance = generators
