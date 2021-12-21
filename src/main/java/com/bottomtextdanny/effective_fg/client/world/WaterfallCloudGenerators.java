@@ -1,6 +1,7 @@
 package com.bottomtextdanny.effective_fg.client.world;
 
 import com.bottomtextdanny.effective_fg.EffectiveFg;
+import com.bottomtextdanny.effective_fg.client.config.EffectiveConfig;
 import com.bottomtextdanny.effective_fg.registry.ParticleRegistry;
 import com.bottomtextdanny.effective_fg.registry.SoundEventRegistry;
 import com.google.common.collect.Lists;
@@ -23,6 +24,9 @@ public class WaterfallCloudGenerators {
     private static boolean resolvingWaterfalls;
 
     public static void tryAddGenerator(IBlockDisplayReader world, BlockPos pos) {
+        if (!EffectiveConfig.enableEffects.get())
+            return;
+
         final BlockPos abovePos = pos.above();
 
         if (world.getBlockState(pos).getBlock() == Blocks.WATER &&

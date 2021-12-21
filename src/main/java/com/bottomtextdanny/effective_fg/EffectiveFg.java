@@ -1,12 +1,14 @@
 package com.bottomtextdanny.effective_fg;
 
 import com.bottomtextdanny.effective_fg.client.WorldTickHandler;
+import com.bottomtextdanny.effective_fg.client.config.EffectiveConfig;
 import com.bottomtextdanny.effective_fg.registry.ParticleRegistry;
 import com.bottomtextdanny.effective_fg.registry.SoundEventRegistry;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 @Mod(EffectiveFg.ID)
 public class EffectiveFg {
@@ -22,6 +24,8 @@ public class EffectiveFg {
     public static final String ID = "effective_fg";
 
     public EffectiveFg() {
+        EffectiveConfig.loadConfig(FMLPaths.CONFIGDIR.get().resolve("effective.toml"));
+
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
         MinecraftForge.EVENT_BUS.addListener(WorldTickHandler::worldTickLast);
         SoundEventRegistry.ENTRIES.register(modEventBus);

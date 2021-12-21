@@ -1,5 +1,6 @@
 package com.bottomtextdanny.effective_fg.mixin.client;
 
+import com.bottomtextdanny.effective_fg.client.config.EffectiveConfig;
 import com.bottomtextdanny.effective_fg.client.world.WaterfallCloudGenerators;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.block.BlockState;
@@ -19,6 +20,7 @@ public class BlockRenderManagerMixin {
 
     @Inject(method = "renderLiquid", at = @At("TAIL"))
     public void renderFluid(BlockPos pos, IBlockDisplayReader world, IVertexBuilder vertexConsumer, FluidState state, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-        WaterfallCloudGenerators.tryAddGenerator(world, pos);
+        if (EffectiveConfig.enableEffects.get())
+            WaterfallCloudGenerators.tryAddGenerator(world, pos);
     }
 }

@@ -1,6 +1,7 @@
 package com.bottomtextdanny.effective_fg.mixin.client;
 
 import com.bottomtextdanny.effective_fg.EffectiveFg;
+import com.bottomtextdanny.effective_fg.client.config.EffectiveConfig;
 import com.bottomtextdanny.effective_fg.registry.ParticleRegistry;
 import com.bottomtextdanny.effective_fg.registry.SoundEventRegistry;
 import net.minecraft.block.Blocks;
@@ -61,6 +62,9 @@ public abstract class EntityMixin {
 
     @Inject(method = "doWaterSplashEffect", at = @At("TAIL"))
     protected void onSwimmingStart(CallbackInfo callbackInfo) {
+        if (!EffectiveConfig.enableEffects.get())
+            return;
+
         if (this.level.isClientSide) {
             Entity entity = !this.getPassengers().isEmpty() && this.getFirstPassenger() != null ? this.getFirstPassenger() : (Entity) (Object) this;
             float f = entity == (Object) this ? 0.2f : 0.9f;
@@ -85,6 +89,9 @@ public abstract class EntityMixin {
 
     @Inject(method = "tick", at = @At("TAIL"))
     public void tick(CallbackInfo callbackInfo) {
+        if (!EffectiveConfig.enableEffects.get())
+            return;
+
         if (!this.onGround && !this.isInWater() && !this.isInLava() && level.getBlockState(this.blockPosition().offset(this.getDeltaMovement().x, this.getDeltaMovement().y, this.getDeltaMovement().z)).getBlock() == Blocks.LAVA) {
             if (this.level.isClientSide) {
                 Entity entity = !this.getPassengers().isEmpty() && this.getFirstPassenger() != null ? this.getFirstPassenger() : (Entity) (Object) this;
