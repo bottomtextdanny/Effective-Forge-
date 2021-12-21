@@ -6,10 +6,14 @@ buildscript {
     }
 
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
-        classpath 'org.spongepowered:mixingradle:0.7-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: "${forgegradle_version}", changing: true
+        classpath group: 'org.spongepowered', name: 'mixingradle', version: "${mixingradle_version}"
     }
 }
+plugins {
+    id 'com.matthewprenger.cursegradle' version "1.4.0"
+}
+
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'org.spongepowered.mixin'
 repositories{
@@ -25,11 +29,11 @@ version = '1.0'
 group = 'com.bottomtextdanny'
 archivesBaseName = 'effective_fg'
 
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: "official", version: "1.18"
+    mappings channel: 'official', version: "${minecraft_version}"
 
     runs {
 
@@ -38,6 +42,8 @@ minecraft {
             arg "-mixin.config=effective_fg.mixins.json"
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             mods {
                 effective_fg {
                     source sourceSets.main
@@ -49,6 +55,8 @@ minecraft {
             arg "-mixin.config=effective_fg.mixins.json"
             property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
             property 'forge.logging.console.level', 'debug'
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             mods {
                 effective_fg {
                     source sourceSets.main
@@ -61,6 +69,8 @@ minecraft {
             arg "-mixin.config=effective_fg.mixins.json"
             property "forge.logging.markers", "SCAN,REGISTRIES,REGISTRYDUMP"
             property "forge.logging.console.level", "debug"
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
             mods {
                 effective_fg {
                     source sourceSets.main
@@ -73,13 +83,21 @@ minecraft {
 apply plugin: 'org.spongepowered.mixin'
 mixin {
     add sourceSets.main, "effective_fg.mixins.refmap.json"
-    config 'effective_fg.mixins.json'
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18-38.0.14'
+    minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    compileOnly fg.deobf("curse.maven:magnesium-532724:3503910")
+    runtimeOnly fg.deobf("curse.maven:magnesium-532724:3503910")
+
+    runtimeOnly fg.deobf("curse.maven:jei-238222:3438494")
+    runtimeOnly fg.deobf("curse.maven:jer-240630:3066754")
+    runtimeOnly fg.deobf("curse.maven:jade-324717:3467445")
+    runtimeOnly fg.deobf("curse.maven:spark-361579:3337641")
+    
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
 }
 

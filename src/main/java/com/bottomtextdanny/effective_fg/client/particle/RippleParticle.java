@@ -1,21 +1,23 @@
 package com.bottomtextdanny.effective_fg.client.particle;
+ 
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
-import net.minecraft.client.Camera;
-import net.minecraft.client.multiplayer.ClientLevel;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.particle.*;
-import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.particles.BasicParticleType;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Quaternion;
+import net.minecraft.util.math.vector.Vector3d;
+import net.minecraft.util.math.vector.Vector3f;
 
 import java.util.Random;
 
-public class RippleParticle extends TextureSheetParticle {
-    private final SpriteSet spriteProvider;
+public class RippleParticle extends SpriteTexturedParticle
+{
+    private final IAnimatedSprite spriteProvider;
 
-    private RippleParticle(ClientLevel world, double x, double y, double z, double xd, double yd, double zd, SpriteSet spriteProvider) {
+    private RippleParticle(ClientWorld world, double x, double y, double z, double xd, double yd, double zd, IAnimatedSprite spriteProvider) {
         super(world, x, y, z, xd, yd, zd);
 
         this.xd = 0;
@@ -30,8 +32,8 @@ public class RippleParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    public IParticleRenderType getRenderType() {
+        return IParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
     }
 
     @Override
@@ -46,19 +48,19 @@ public class RippleParticle extends TextureSheetParticle {
     }
 
     @Override
-    public void render(VertexConsumer vertexConsumer, Camera camera, float tickDelta) {
+    public void render(IVertexBuilder vertexConsumer, ActiveRenderInfo camera, float tickDelta) {
         this.setSpriteFromAge(spriteProvider);
 
-        Vec3 vec3d = camera.getPosition();
-        float f = (float) (Mth.lerp(tickDelta, this.xo, this.x) - vec3d.x());
-        float g = (float) (Mth.lerp(tickDelta, this.yo, this.y) - vec3d.y());
-        float h = (float) (Mth.lerp(tickDelta, this.zo, this.z) - vec3d.z());
+        Vector3d vec3d = camera.getPosition();
+        float f = (float) (MathHelper.lerp(tickDelta, this.xo, this.x) - vec3d.x());
+        float g = (float) (MathHelper.lerp(tickDelta, this.yo, this.y) - vec3d.y());
+        float h = (float) (MathHelper.lerp(tickDelta, this.zo, this.z) - vec3d.z());
         Quaternion quaternion2;
         if (this.roll == 0.0F) {
             quaternion2 = camera.rotation();
         } else {
             quaternion2 = new Quaternion(camera.rotation());
-            float i = Mth.lerp(tickDelta, this.oRoll, this.roll);
+            float i = MathHelper.lerp(tickDelta, this.oRoll, this.roll);
             quaternion2.mul(Vector3f.ZP.rotationDegrees(i));
         }
 
@@ -86,15 +88,16 @@ public class RippleParticle extends TextureSheetParticle {
         vertexConsumer.vertex(Vector3fs[3].x(), Vector3fs[3].y(), Vector3fs[3].z()).uv(minU, maxV).color(rCol, gCol, bCol, alpha).uv2(l).endVertex();
     }
     
-    public static class Factory implements ParticleProvider<SimpleParticleType> {
-        private final SpriteSet spriteProvider;
+    public static class Factory implements IParticleFactory<BasicParticleType>
+    {
+        private final IAnimatedSprite spriteProvider;
 
-        public Factory(SpriteSet spriteProvider) {
+        public Factory(IAnimatedSprite spriteProvider) {
             this.spriteProvider = spriteProvider;
         }
 
         @Override
-        public Particle createParticle(SimpleParticleType parameters, ClientLevel world, double x, double y, double z, double xd, double yd, double zd) {
+        public Particle createParticle(BasicParticleType parameters, ClientWorld world, double x, double y, double z, double xd, double yd, double zd) {
             return new RippleParticle(world, x, y, z, xd, yd, zd, this.spriteProvider);
         }
     }

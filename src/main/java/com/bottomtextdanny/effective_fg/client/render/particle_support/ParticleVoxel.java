@@ -1,14 +1,14 @@
 package com.bottomtextdanny.effective_fg.client.render.particle_support;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
-import net.minecraft.core.Direction;
+import net.minecraft.util.Direction;
+import net.minecraft.util.math.vector.Matrix3f;
+import net.minecraft.util.math.vector.Matrix4f;
+import net.minecraft.util.math.vector.Vector3f;
+import net.minecraft.util.math.vector.Vector4f;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -23,7 +23,7 @@ public class ParticleVoxel {
     public float zRot;
     public boolean mirror;
     public boolean visible = true;
-    public BiConsumer<ParticleVoxel, PoseStack> renderCallback;
+    public BiConsumer<ParticleVoxel, MatrixStack> renderCallback;
     public float defaultAngleX, defaultAngleY, defaultAngleZ, defaultOffsetX, defaultOffsetY, defaultOffsetZ, defaultSizeX, defaultSizeY, defaultSizeZ;
     public int textureOffsetX, textureOffsetY;
     public float texWidth, texHeight;
@@ -39,12 +39,12 @@ public class ParticleVoxel {
     }
 
     @SuppressWarnings("unchecked")
-    public <T extends ParticleVoxel> T callback(BiConsumer<ParticleVoxel, PoseStack> cons) {
+    public <T extends ParticleVoxel> T callback(BiConsumer<ParticleVoxel, MatrixStack> cons) {
         this.renderCallback = cons;
         return (T)this;
     }
 
-    public void translateRotateWithParents(PoseStack matrixStackIn) {
+    public void translateRotateWithParents(MatrixStack matrixStackIn) {
         if (parent != null) {
             parent.translateRotateWithParents(matrixStackIn);
         }
@@ -159,11 +159,11 @@ public class ParticleVoxel {
         this.cubeList.add(new ModelBox(texOffX, texOffY, x, y, z, width, height, depth, deltaX, deltaY, deltaZ, mirorIn, this.texWidth, this.texHeight));
     }
 
-    public void render(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, float u0, float u1, float v0, float v1) {
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, float u0, float u1, float v0, float v1) {
         this.render(matrixStackIn, bufferIn, packedLightIn, u0, u1, v0, v1, 1.0F, 1.0F, 1.0F, 1.0F);
     }
 
-    public void render(PoseStack matrixStackIn, VertexConsumer bufferIn, int packedLightIn, float u0, float u1, float v0, float v1, float red, float green, float blue, float alpha) {
+    public void render(MatrixStack matrixStackIn, IVertexBuilder bufferIn, int packedLightIn, float u0, float u1, float v0, float v1, float red, float green, float blue, float alpha) {
         if (this.visible) {
             matrixStackIn.pushPose();
             this.translateRotate(matrixStackIn);
@@ -182,7 +182,7 @@ public class ParticleVoxel {
         }
     }
 
-    public void translateRotate(PoseStack matrixStackIn) {
+    public void translateRotate(MatrixStack matrixStackIn) {
         matrixStackIn.translate((double)(this.x / 16.0F), (double)(this.y / 16.0F), (double)(this.z / 16.0F));
         if (this.zRot != 0.0F) {
             matrixStackIn.mulPose(Vector3f.ZP.rotation(this.zRot));
@@ -198,7 +198,7 @@ public class ParticleVoxel {
 
     }
 
-    private void doRender(PoseStack.Pose matrixEntryIn, VertexConsumer bufferIn, int packedLightIn, float u0, float u1, float v0, float v1, float red, float green, float blue, float alpha) {
+    private void doRender(MatrixStack.Entry matrixEntryIn, IVertexBuilder bufferIn, int packedLightIn, float u0, float u1, float v0, float v1, float red, float green, float blue, float alpha) {
         Matrix4f matrix4f = matrixEntryIn.pose();
         Matrix3f matrix3f = matrixEntryIn.normal();
 

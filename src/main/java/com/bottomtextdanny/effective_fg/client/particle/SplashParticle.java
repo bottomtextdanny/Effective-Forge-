@@ -4,31 +4,32 @@ import com.bottomtextdanny.effective_fg.client.render.model.SplashBottomModel;
 import com.bottomtextdanny.effective_fg.client.render.model.SplashModel;
 import com.bottomtextdanny.effective_fg.client.render.particle_support.ParticleModel;
 import com.bottomtextdanny.effective_fg.registry.ParticleRegistry;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import net.minecraft.client.Camera;
-import net.minecraft.client.multiplayer.ClientLevel;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.IVertexBuilder;
 import net.minecraft.client.particle.*;
-import net.minecraft.core.particles.SimpleParticleType;
-import net.minecraft.util.Mth;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.phys.Vec3;
+import net.minecraft.client.renderer.ActiveRenderInfo;
+import net.minecraft.client.world.ClientWorld;
+import net.minecraft.entity.Entity;
+import net.minecraft.particles.BasicParticleType;
+import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.vector.Vector3d;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class SplashParticle extends TextureSheetParticle {
+public class SplashParticle extends SpriteTexturedParticle
+{
     private static final ParticleModel WAVE_MODEL = new SplashModel();
     private static final ParticleModel WAVE_BOTTOM_MODEL = new SplashBottomModel();
-    private final SpriteSet sprites;
+    private final IAnimatedSprite sprites;
     private float widthMultiplier;
     private float heightMultiplier;
     private int wave1End;
     private int wave2Start;
     private int wave2End;
 
-    protected SplashParticle(ClientLevel level, double x, double y, double z, SpriteSet spriteSet) {
+    protected SplashParticle(ClientWorld level, double x, double y, double z, IAnimatedSprite spriteSet) {
         super(level, x, y, z);
         this.sprites = spriteSet;
         this.gravity = 0.0F;
@@ -40,15 +41,15 @@ public class SplashParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    public IParticleRenderType getRenderType() {
+        return IParticleRenderType.PARTICLE_SHEET_OPAQUE;
     }
 
     @Override
     public void tick() {
         if (this.widthMultiplier == 0f) {
             List<Entity> closeEntities = level.getEntities(null, this.getBoundingBox().inflate(5.0f)).stream().filter(Entity::isInWater).collect(Collectors.toList());
-            closeEntities.sort((o1, o2) -> (int) (o1.position().distanceToSqr(new Vec3(this.x, this.y, this.z)) - o2.position().distanceToSqr(new Vec3(this.x, this.y, this.z))));
+            closeEntities.sort((o1, o2) -> (int) (o1.position().distanceToSqr(new Vector3d(this.x, this.y, this.z)) - o2.position().distanceToSqr(new Vector3d(this.x, this.y, this.z))));
 
             if (!closeEntities.isEmpty()) {
                 this.widthMultiplier = closeEntities.get(0).getBbWidth() * 2f;
@@ -84,15 +85,15 @@ public class SplashParticle extends TextureSheetParticle {
     }
 
     @Override
-    public void render(VertexConsumer vertexConsumer, Camera camera, float tickDelta) {
+    public void render(IVertexBuilder vertexConsumer, ActiveRenderInfo camera, float tickDelta) {
         int light = getLightColor(tickDelta);
          final float yOffset = 0.001F;
         final float bottomYOffset = -0.1F;
-        Vec3 vec3d = camera.getPosition();
-        float f = (float) (Mth.lerp(tickDelta, this.xo, this.x) - vec3d.x());
-        float g = (float) (Mth.lerp(tickDelta, this.yo, this.y) - vec3d.y()) + yOffset;
-        float h = (float) (Mth.lerp(tickDelta, this.zo, this.z) - vec3d.z());
-        PoseStack matrixStack = new PoseStack();
+        Vector3d vec3d = camera.getPosition();
+        float f = (float) (MathHelper.lerp(tickDelta, this.xo, this.x) - vec3d.x());
+        float g = (float) (MathHelper.lerp(tickDelta, this.yo, this.y) - vec3d.y()) + yOffset;
+        float h = (float) (MathHelper.lerp(tickDelta, this.zo, this.z) - vec3d.z());
+        MatrixStack matrixStack = new MatrixStack();
 
         if (age <= this.wave1End) {
             int frameForFirstSplash = Math.round(((float) this.age / (float) this.wave1End) * 12);
@@ -150,16 +151,17 @@ public class SplashParticle extends TextureSheetParticle {
         }
     }
     
-    public static class Factory implements ParticleProvider<SimpleParticleType> {
-        private final SpriteSet spriteSet;
+    public static class Factory implements IParticleFactory<BasicParticleType>
+    {
+        private final IAnimatedSprite spriteSet;
 
-        public Factory(SpriteSet spriteProvider) {
+        public Factory(IAnimatedSprite spriteProvider) {
             this.spriteSet = spriteProvider;
         }
 
         @Nullable
         @Override
-        public Particle createParticle(SimpleParticleType parameters, ClientLevel level, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
+        public Particle createParticle(BasicParticleType parameters, ClientWorld level, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
             return new SplashParticle(level, x, y, z, this.spriteSet);
         }
     }

@@ -11,5 +11,9 @@
   ],
   "injectors": {
     "defaultRequire": 1
-  }
+  },
+  "mixins": [
+    "client.compat.SodiumFluidRendererMixin",
+    "client.settings.SodiumGameOptionsMixin"
+  ]
 }
