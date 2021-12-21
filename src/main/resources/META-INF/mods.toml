@@ -1,6 +1,6 @@
 
 modLoader="javafml"
-loaderVersion="[38,)"
+loaderVersion="[36,)"
 license="All rights reserved"
 [[mods]]
 modId="effective_fg"
@@ -15,12 +15,12 @@ A client-side mod adding ambient and environmental interaction effects to enhanc
 [[dependencies.effective_fg]]
     modId="forge" #mandatory
     mandatory=true #mandatory
-    versionRange="[38,)" #mandatory
+    versionRange="[36,)" #mandatory
     ordering="NONE"
     side="BOTH"
 [[dependencies.effective_fg]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.18,1.19)"
+    versionRange="[1.16.5,1.17)"
     ordering="NONE"
     side="BOTH"

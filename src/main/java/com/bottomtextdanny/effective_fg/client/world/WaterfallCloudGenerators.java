@@ -5,36 +5,55 @@ import com.bottomtextdanny.effective_fg.registry.ParticleRegistry;
 import com.bottomtextdanny.effective_fg.registry.SoundEventRegistry;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.BlockPos;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.client.audio.SoundSource;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.IBlockDisplayReader;
+import net.minecraft.world.World;
 
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class WaterfallCloudGenerators {
     public static final Set<WaterfallCloudGenerator> generators = Sets.newHashSet();
     private static boolean resolvingWaterfalls;
 
-    public static void addGenerator(Level level, BlockPos blockPos) {
+    public static void tryAddGenerator(IBlockDisplayReader world, BlockPos pos) {
+        final BlockPos abovePos = pos.above();
+
+        if (world.getBlockState(pos).getBlock() == Blocks.WATER &&
+                world.getBlockState(pos).getFluidState().isSource() &&
+                world.getBlockState(abovePos).getBlock() == Blocks.WATER &&
+                !world.getBlockState(abovePos).getFluidState().isSource() &&
+                world.getBlockState(abovePos).getFluidState().getOwnHeight() >= 0.77f) {
+            assert Minecraft.getInstance().level != null;
+            addGenerator(Minecraft.getInstance().level, new BlockPos(pos.getX() + .5f, pos.getY() + .5f, pos.getZ() + .5f));
+        }
+    }
+
+    public static void addGenerator(World level, BlockPos blockPos) {
         generators.add(new WaterfallCloudGenerator(level, blockPos));
     }
 
-    public static void removeGenerator(Level level, BlockPos blockPos) {
+    public static void removeGenerator(World level, BlockPos blockPos) {
         generators.removeIf(waterfallCloudGenerator -> waterfallCloudGenerator.level == level && waterfallCloudGenerator.blockPos == blockPos);
     }
 
     public static void tick() {
         resolvingWaterfalls = true;
         List<WaterfallCloudGenerator> generatorsToRemove = Lists.newLinkedList();
-        List<WaterfallCloudGenerator> generatorsInDistance = generators.stream().filter(waterfallCloudGenerator -> waterfallCloudGenerator.level == Minecraft.getInstance().level && Math.sqrt(waterfallCloudGenerator.blockPos.distSqr(Minecraft.getInstance().player.blockPosition())) <= Minecraft.getInstance().options.renderDistance * 8f).toList();
+        List<WaterfallCloudGenerator> generatorsInDistance = generators
+                .stream()
+                .filter(waterfallCloudGenerator -> waterfallCloudGenerator.level == Minecraft.getInstance().level &&
+                        Math.sqrt(waterfallCloudGenerator.blockPos.distSqr(Minecraft.getInstance().player.blockPosition())) <= Minecraft.getInstance().options.renderDistance * 8f).collect(Collectors.toList());
 
         int counter = 0;
         for (WaterfallCloudGenerator waterfallCloudGenerator: generatorsInDistance) {
-            Level level = waterfallCloudGenerator.level;
+            World level = waterfallCloudGenerator.level;
             BlockPos blockPos = waterfallCloudGenerator.blockPos;
 
             BlockState stateUp = level.getBlockState(blockPos.offset(0, 1, 0));
@@ -51,14 +70,14 @@ public class WaterfallCloudGenerators {
                 offsetZ = level.random.nextBoolean() ? offsetZ : -offsetZ;
 
                 if (counter < 50 && level.random.nextInt(EffectiveFg.WATERFALL_PARTICLE_SOUND_RARITY) == 0) {
-                    level.playLocalSound(blockPos.getX(), blockPos.getY(), blockPos.getZ(), SoundEventRegistry.AMBIENCE_WATERFALL.get(), SoundSource.AMBIENT, 1.5f, 1.2f + level.random.nextFloat() / 10f, true);
+                    level.playLocalSound(blockPos.getX(), blockPos.getY(), blockPos.getZ(), SoundEventRegistry.AMBIENCE_WATERFALL.get(), SoundCategory.AMBIENT, 1.5f, 1.2f + level.random.nextFloat() / 10f, true);
                 }
                 level.addParticle(ParticleRegistry.WATERFALL_CLOUD.get(), blockPos.getX() + 0.5 + offsetX, blockPos.getY() + 1 + level.random.nextFloat(), blockPos.getZ() + 0.5 + offsetZ, level.random.nextFloat() / 5f * Math.signum(offsetX), level.random.nextFloat() / 5f, level.random.nextFloat() / 5f * Math.signum(offsetZ));
             }
             counter++;
         }
 
-        generators.removeAll(generatorsToRemove);
+        generatorsToRemove.forEach(generators::remove);
         generators.removeIf(waterfallCloudGenerator -> waterfallCloudGenerator.level != Minecraft.getInstance().player.level || Math.sqrt(waterfallCloudGenerator.blockPos.distSqr(Minecraft.getInstance().player.blockPosition())) >= Minecraft.getInstance().options.renderDistance * 16f);
 
         resolvingWaterfalls = false;
@@ -69,10 +88,10 @@ public class WaterfallCloudGenerators {
     }
 
     public static class WaterfallCloudGenerator {
-        public Level level;
+        public World level;
         public BlockPos blockPos;
 
-        public WaterfallCloudGenerator(Level level, BlockPos blockPos) {
+        public WaterfallCloudGenerator(World level, BlockPos blockPos) {
             this.level = level;
             this.blockPos = blockPos;
         }
