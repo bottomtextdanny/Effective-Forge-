@@ -5,9 +5,9 @@
   "minVersion": "0.8",
   "refmap": "effective_fg.mixins.refmap.json",
   "client": [
-    "WaterFluidMixin",
-    "BlockRenderManagerMixin",
-    "EntityMixin"
+    "EntityMixin",
+    "LiquidBlockRendererMixin",
+    "WaterFluidMixin"
   ],
   "injectors": {
     "defaultRequire": 1

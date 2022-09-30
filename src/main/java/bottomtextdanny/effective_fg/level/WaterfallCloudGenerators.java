@@ -28,6 +28,11 @@ public class WaterfallCloudGenerators {
     }
 
     public static void tick() {
+        if (!EffectiveFg.config().cascades.get()) {
+            GENERATORS.clear();
+            return;
+        }
+
         Minecraft instance = Minecraft.getInstance();
         LocalPlayer player = instance.player;
 
@@ -41,16 +46,19 @@ public class WaterfallCloudGenerators {
         levelO = level;
 
         Random random = level.random;
+
         SoundManager soundManager = instance.getSoundManager();
         float cascadeRange = EffectiveFg.config().cascadeSoundRange.get().floatValue();
         float cascadeRangeSquared = cascadeRange * cascadeRange;
 
         resolvingWaterfalls = true;
-        int maxGeneratorDistance = Mth.square(instance.options.renderDistance * 8);
+        int maxGeneratorDistance = Mth.square(instance.options.renderDistance * 16);
         int[] soundCounter = {1};
 
         GENERATORS.removeIf(blockPos -> {
-            double dist = blockPos.distSqr(pos);
+            int x = pos.getX() - blockPos.getX();
+            int z = pos.getZ() - blockPos.getZ();
+            int dist = x * x + z * z;
             if (dist >= maxGeneratorDistance) return true;
 
             BlockState stateUp = level.getBlockState(blockPos.offset(0, 1, 0));
