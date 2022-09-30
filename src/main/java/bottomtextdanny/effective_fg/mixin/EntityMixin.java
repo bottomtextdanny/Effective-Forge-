@@ -85,7 +85,7 @@ public abstract class EntityMixin {
             } else {
                 for (int i = 0; i < this.getBbWidth() * EffectiveFg.SPLASH_WATER_DROPLET_FACTOR; i++) {
                     Random random = this.random;
-                    level.addParticle(ParticleRegistry.DROPLET.get(), this.getX() + random.nextGaussian() * this.getBbWidth() / 5f, this.getY(), this.getZ() + random.nextGaussian() * this.getBbWidth(), random.nextGaussian() / 15f, random.nextFloat() / 2.5f, random.nextGaussian() / 15f);
+                    level.addParticle(ParticleRegistry.DROPLET.get(), this.getX() + random.nextGaussian() * this.getBbWidth() / 5f, this.getY(), this.getZ() + random.nextGaussian() * this.getBbWidth() / 5f, random.nextGaussian() / 15f, random.nextFloat() / 2.5f, random.nextGaussian() / 15f);
                 }
 
                 EffectUtil.smallSplashSound(this.getX(), this.getY(), this.getZ(), g);

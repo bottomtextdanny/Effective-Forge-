@@ -45,7 +45,7 @@ public final class EffectUtil {
 	}
 
 	public static boolean shouldRipple(Level level, BlockPos pos) {
-		if (EffectiveFg.config().rainRippleAbundance.get() > 0 && level.isRainingAt(pos)) {
+		if (EffectiveFg.config().rainRippleAbundance.get() > 0 && level.isRainingAt(pos.above())) {
 			FluidState fluidState = level.getFluidState(pos);
 			return fluidState.isSource() && level.getBlockState(pos.above()).isAir();
 		}
