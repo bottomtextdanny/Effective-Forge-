@@ -10,7 +10,7 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.FriendlyByteBuf;
 
 public class SplashParticleOptions implements ParticleOptions {
-	public static final ParticleOptions.Deserializer<SplashParticleOptions> DESERIALIZER = new ParticleOptions.Deserializer<SplashParticleOptions>() {
+	public static final Deserializer<SplashParticleOptions> DESERIALIZER = new Deserializer<SplashParticleOptions>() {
 		public SplashParticleOptions fromCommand(ParticleType<SplashParticleOptions> type, StringReader string) throws CommandSyntaxException {
 			string.expect(' ');
 			float width = string.readFloat();

@@ -212,7 +212,7 @@ public class ParticleVoxel {
 
                 for(int i = 0; i < 4; ++i) {
 
-                    ParticleVoxel.PositionTextureVertex positiontexturevertex = modelrenderer$texturedquad.vertexPlusWidthositions[i];
+                    PositionTextureVertex positiontexturevertex = modelrenderer$texturedquad.vertexPlusWidthositions[i];
                     float f3 = positiontexturevertex.position.x() / 16.0F;
                     float f4 = positiontexturevertex.position.y() / 16.0F;
                     float f5 = positiontexturevertex.position.z() / 16.0F;
@@ -230,7 +230,7 @@ public class ParticleVoxel {
                 }
 
                 for(int i = 0; i < 4; ++i) {
-                    ParticleVoxel.PositionTextureVertex positiontexturevertex;
+                    PositionTextureVertex positiontexturevertex;
                     if (i % 2 == 0) {
                         positiontexturevertex = modelrenderer$texturedquad.vertexPlusWidthositions[i + 1];
                     } else {
@@ -265,8 +265,8 @@ public class ParticleVoxel {
             this(new Vector3f(x, y, z), texU, texV);
         }
 
-        public ParticleVoxel.PositionTextureVertex setTextureUV(float texU, float texV) {
-            return new ParticleVoxel.PositionTextureVertex(this.position, texU, texV);
+        public PositionTextureVertex setTextureUV(float texU, float texV) {
+            return new PositionTextureVertex(this.position, texU, texV);
         }
 
         public PositionTextureVertex(Vector3f posIn, float texU, float texV) {
@@ -278,10 +278,10 @@ public class ParticleVoxel {
 
     @OnlyIn(Dist.CLIENT)
     static class TexturedQuad {
-        public final ParticleVoxel.PositionTextureVertex[] vertexPlusWidthositions;
+        public final PositionTextureVertex[] vertexPlusWidthositions;
         public final Vector3f normal;
 
-        public TexturedQuad(ParticleVoxel.PositionTextureVertex[] positionsIn, float u0, float v0, float u1, float v1, float texWidth, float texHeight, boolean mirrorIn, Direction directionIn) {
+        public TexturedQuad(PositionTextureVertex[] positionsIn, float u0, float v0, float u1, float v1, float texWidth, float texHeight, boolean mirrorIn, Direction directionIn) {
             this.vertexPlusWidthositions = positionsIn;
             float f = 0.0F / texWidth;
             float f1 = 0.0F / texHeight;
@@ -293,7 +293,7 @@ public class ParticleVoxel {
                 int i = positionsIn.length;
 
                 for(int j = 0; j < i / 2; ++j) {
-                    ParticleVoxel.PositionTextureVertex MoreContentModelRenderer$positiontexturevertex = positionsIn[j];
+                    PositionTextureVertex MoreContentModelRenderer$positiontexturevertex = positionsIn[j];
                     positionsIn[j] = positionsIn[i - 1 - j];
                     positionsIn[i - 1 - j] = MoreContentModelRenderer$positiontexturevertex;
                 }

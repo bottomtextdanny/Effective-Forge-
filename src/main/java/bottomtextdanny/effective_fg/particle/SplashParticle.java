@@ -1,5 +1,6 @@
 package bottomtextdanny.effective_fg.particle;
 
+import bottomtextdanny.effective_fg.EffectiveFg;
 import bottomtextdanny.effective_fg.model.SplashBottomModel;
 import bottomtextdanny.effective_fg.model.SplashModel;
 import bottomtextdanny.effective_fg.model.SplashRimModel;
@@ -107,7 +108,7 @@ public class SplashParticle extends TextureSheetParticle {
             matrixStack.pushPose();
             matrixStack.translate(viewX, viewY, viewZ);
             matrixStack.scale(widthMultiplier, -heightMultiplier, widthMultiplier);
-            WAVE_MODEL.renderToBuffer(matrixStack, vertexConsumer, light, minU, maxU, minV, maxV, r, g, b, 0.6F);
+            WAVE_MODEL.renderToBuffer(matrixStack, vertexConsumer, light, minU, maxU, minV, maxV, r, g, b, EffectiveFg.config().waterSplashAlpha.get().floatValue());
             WAVE_RIM_MODEL.renderToBuffer(matrixStack, vertexConsumer, light, minU, maxU, minV, maxV, 1.0F, 1.0F, 1.0F, 1.0F);
             matrixStack.popPose();
             matrixStack.pushPose();
@@ -138,7 +139,7 @@ public class SplashParticle extends TextureSheetParticle {
 
             matrixStack.pushPose();
             matrixStack.scale(widthMultiplier * 0.5f, -heightMultiplier * 2.0f, widthMultiplier * 0.5f);
-            WAVE_MODEL.renderToBuffer(matrixStack, vertexConsumer, light, minU, maxU, minV, maxV, r, g, b, 0.6F);
+            WAVE_MODEL.renderToBuffer(matrixStack, vertexConsumer, light, minU, maxU, minV, maxV, r, g, b, EffectiveFg.config().waterSplashAlpha.get().floatValue());
             WAVE_RIM_MODEL.renderToBuffer(matrixStack, vertexConsumer, light, minU, maxU, minV, maxV, 1.0F, 1.0F, 1.0F, 1.0F);
             matrixStack.popPose();
 

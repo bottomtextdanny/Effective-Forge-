@@ -81,7 +81,7 @@ public class LavaSplashParticle extends TextureSheetParticle {
             matrixStack.pushPose();
             matrixStack.translate(f, g, h);
             matrixStack.scale(widthMultiplier, -heightMultiplier, widthMultiplier);
-            bottomtextdanny.effective_fg.particle.SplashParticle.WAVE_MODEL.renderToBuffer(matrixStack, vertexConsumer, light, minU, maxU, minV, maxV, 1.0F, 1.0F, 1.0F, 1.0F);
+            SplashParticle.WAVE_MODEL.renderToBuffer(matrixStack, vertexConsumer, light, minU, maxU, minV, maxV, 1.0F, 1.0F, 1.0F, 1.0F);
             matrixStack.popPose();
         }
 

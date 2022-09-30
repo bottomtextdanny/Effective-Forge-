@@ -6,7 +6,7 @@
   "refmap": "effective_fg.mixins.refmap.json",
   "client": [
     "WaterFluidMixin",
-    "BlockRenderManagerMixin",
+    "LiquidBlockRendererMixin",
     "EntityMixin"
   ],
   "injectors": {
