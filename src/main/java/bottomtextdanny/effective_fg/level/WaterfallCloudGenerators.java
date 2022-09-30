@@ -4,6 +4,7 @@ import bottomtextdanny.effective_fg.EffectiveFg;
 import bottomtextdanny.effective_fg.registry.ParticleRegistry;
 import bottomtextdanny.effective_fg.registry.SoundEventRegistry;
 import bottomtextdanny.effective_fg.sound.LinearFadeSound;
+import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.LocalPlayer;
@@ -34,12 +35,12 @@ public class WaterfallCloudGenerators {
         }
 
         Minecraft instance = Minecraft.getInstance();
-        LocalPlayer player = instance.player;
-
-        if (instance.isPaused() || player == null) return;
-
         ClientLevel level = instance.level;
-        BlockPos pos = instance.getEntityRenderDispatcher().camera.getBlockPosition();
+        Camera camera = instance.getEntityRenderDispatcher().camera;
+
+        if (instance.isPaused() || level == null || camera == null) return;
+
+        BlockPos pos = camera.getBlockPosition();
 
         if (level != levelO) GENERATORS.clear();
 
@@ -52,7 +53,7 @@ public class WaterfallCloudGenerators {
         float cascadeRangeSquared = cascadeRange * cascadeRange;
 
         resolvingWaterfalls = true;
-        int maxGeneratorDistance = Mth.square(instance.options.renderDistance * 16);
+        int maxGeneratorDistance = Mth.square(Math.max(instance.options.renderDistance, instance.options.simulationDistance) * 16);
         int[] soundCounter = {1};
 
         GENERATORS.removeIf(blockPos -> {
