@@ -11,17 +11,18 @@ import net.minecraft.world.level.material.FluidState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(BlockRenderDispatcher.class)
 public class BlockRenderManagerMixin {
 
     @Inject(method = "renderLiquid", at = @At("TAIL"))
-    public void renderFluid(BlockPos pos, BlockAndTintGetter world, VertexConsumer vertexConsumer, BlockState blockState, FluidState state, CallbackInfoReturnable<Boolean> callbackInfoReturnable) {
-        BlockState stateDoubleUp = world.getBlockState(pos.offset(0, 2, 0));
-        BlockState stateUp = world.getBlockState(pos.offset(0, 1, 0));
-        if (blockState.getBlock() == Blocks.WATER
-            && state.isSource()
+    public void renderFluid(BlockPos pos, BlockAndTintGetter level, VertexConsumer buffer, BlockState state, FluidState fluidState, CallbackInfo ci) {
+        BlockState stateDoubleUp = level.getBlockState(pos.offset(0, 2, 0));
+        BlockState stateUp = level.getBlockState(pos.offset(0, 1, 0));
+        if (state.getBlock() == Blocks.WATER
+            && fluidState.isSource()
             && stateUp.getBlock() == Blocks.WATER
             && !stateUp.getFluidState().isSource()
             && stateUp.getFluidState().getOwnHeight() >= 0.77f

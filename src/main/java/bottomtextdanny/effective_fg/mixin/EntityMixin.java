@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -42,7 +43,7 @@ public abstract class EntityMixin {
 
     @Shadow public abstract float getBbWidth();
 
-    @Shadow @Final protected Random random;
+    @Shadow @Final protected RandomSource random;
 
     @Shadow public abstract List<Entity> getPassengers();
 
@@ -84,7 +85,7 @@ public abstract class EntityMixin {
                 }
             } else {
                 for (int i = 0; i < this.getBbWidth() * EffectiveFg.SPLASH_WATER_DROPLET_FACTOR; i++) {
-                    Random random = this.random;
+                    RandomSource random = this.random;
                     level.addParticle(ParticleRegistry.DROPLET.get(), this.getX() + random.nextGaussian() * this.getBbWidth() / 5f, this.getY(), this.getZ() + random.nextGaussian() * this.getBbWidth(), random.nextGaussian() / 15f, random.nextFloat() / 2.5f, random.nextGaussian() / 15f);
                 }
 

@@ -9,6 +9,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 
 public class LinearFadeSound extends AbstractTickableSoundInstance {
@@ -16,7 +17,7 @@ public class LinearFadeSound extends AbstractTickableSoundInstance {
 	public final float sourceVolume;
 
 	public LinearFadeSound(SoundEvent sound, SoundSource source, float range, float sourceVolume, double x, double y, double z) {
-		super(sound, source);
+		super(sound, source, RandomSource.create());
 		float dist = (float) Minecraft.getInstance().gameRenderer.getMainCamera().getPosition().distanceTo(new Vec3(x, y, z));
 		looping = false;
 		delay = 0;

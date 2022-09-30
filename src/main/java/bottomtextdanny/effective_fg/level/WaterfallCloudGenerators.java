@@ -11,6 +11,7 @@ import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
@@ -40,13 +41,13 @@ public class WaterfallCloudGenerators {
 
         levelO = level;
 
-        Random random = level.random;
+        RandomSource random = level.random;
         SoundManager soundManager = instance.getSoundManager();
         float cascadeRange = EffectiveFg.config().cascadeSoundRange.get().floatValue();
         float cascadeRangeSquared = cascadeRange * cascadeRange;
 
         resolvingWaterfalls = true;
-        int maxGeneratorDistance = Mth.square(instance.options.renderDistance * 8);
+        int maxGeneratorDistance = Mth.square(instance.options.renderDistance().get() * 8);
         int[] soundCounter = {1};
 
         GENERATORS.removeIf(blockPos -> {

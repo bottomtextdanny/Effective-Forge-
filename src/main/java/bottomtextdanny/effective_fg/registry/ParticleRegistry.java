@@ -9,7 +9,7 @@ import net.minecraft.client.particle.ParticleEngine;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.ParticleFactoryRegisterEvent;
+import net.minecraftforge.client.event.RegisterParticleProvidersEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -43,7 +43,7 @@ public class ParticleRegistry {
     }
 
     @SubscribeEvent(priority = EventPriority.LOW)
-    public static void registerParticleTypes(ParticleFactoryRegisterEvent event) {
+    public static void registerParticleTypes(RegisterParticleProvidersEvent event) {
         ParticleEngine particleEngine = Minecraft.getInstance().particleEngine;
 
         if (DROPLET.isPresent()) {

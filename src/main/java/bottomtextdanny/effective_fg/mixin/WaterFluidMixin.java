@@ -6,6 +6,7 @@ import bottomtextdanny.effective_fg.util.EffectUtil;
 import com.mojang.math.Vector3d;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.WaterFluid;
@@ -21,7 +22,7 @@ import java.util.Random;
 public abstract class WaterFluidMixin {
 
     @Inject(method = "animateTick", at = @At("TAIL"))
-    protected void animateTick(Level level, BlockPos pos, FluidState fluidState, Random random, CallbackInfo ci) {
+    protected void animateTick(Level level, BlockPos pos, FluidState fluidState, RandomSource random, CallbackInfo ci) {
 
         if (EffectUtil.shouldSplashie(level, pos.above(), fluidState)) {
             Vec3 vec3d = fluidState.getFlow(level, pos);
