@@ -17,10 +17,10 @@ A client-side mod adding ambient and environmental interaction effects to enhanc
     mandatory=true #mandatory
     versionRange="[38,)" #mandatory
     ordering="NONE"
-    side="BOTH"
+    side="CLIENT"
 [[dependencies.effective_fg]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.18,1.19)"
+    versionRange="[1.18,)"
     ordering="NONE"
-    side="BOTH"
+    side="CLIENT"
