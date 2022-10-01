@@ -20,9 +20,9 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nullable;
 
 public class SplashParticle extends TextureSheetParticle {
-    static final ParticleModel WAVE_MODEL = new SplashModel(58);
+    static final ParticleModel WAVE_MODEL = new SplashModel(56);
     static final ParticleModel WAVE_RIM_MODEL = new SplashRimModel();
-    static final ParticleModel WAVE_BOTTOM_MODEL = new SplashBottomModel(58);
+    static final ParticleModel WAVE_BOTTOM_MODEL = new SplashBottomModel(56);
     private final SpriteSet sprites;
     private float widthMultiplier;
     private final float heightMultiplier;
