@@ -53,7 +53,7 @@ public class WaterfallCloudGenerators {
         float cascadeRangeSquared = cascadeRange * cascadeRange;
 
         resolvingWaterfalls = true;
-        int maxGeneratorDistance = Mth.square(Math.max(instance.options.renderDistance, instance.options.simulationDistance) * 16);
+        int maxGeneratorDistance = Mth.square((Math.max(instance.options.renderDistance, instance.options.simulationDistance) + 1) * 16);
         int[] soundCounter = {1};
 
         GENERATORS.removeIf(blockPos -> {

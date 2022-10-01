@@ -8,9 +8,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 public class SplashModel extends ParticleModel {
     private final ParticleVoxel splash;
 
-    public SplashModel() {
+    public SplashModel(int height) {
         this.texWidth = 48;
-        this.texHeight = 56;
+        this.texHeight = height;
 
         this.splash = new ParticleVoxel(this);
         this.splash.setPos(6.0F, 0.0F, -6.0F);
