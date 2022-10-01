@@ -1,6 +1,10 @@
 package bottomtextdanny.effective_fg.particle;
 
+import bottomtextdanny.effective_fg.model.SplashBottomModel;
+import bottomtextdanny.effective_fg.model.SplashModel;
+import bottomtextdanny.effective_fg.model.SplashRimModel;
 import bottomtextdanny.effective_fg.particletype.SplashParticleOptions;
+import bottomtextdanny.effective_fg.util.ParticleModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
@@ -13,6 +17,8 @@ import net.minecraft.world.phys.Vec3;
 import javax.annotation.Nullable;
 
 public class LavaSplashParticle extends TextureSheetParticle {
+    static final ParticleModel WAVE_MODEL = new SplashModel(28);
+    static final ParticleModel WAVE_BOTTOM_MODEL = new SplashBottomModel(28);
     private final SpriteSet sprites;
     private float widthMultiplier;
     private float heightMultiplier;
@@ -81,7 +87,7 @@ public class LavaSplashParticle extends TextureSheetParticle {
             matrixStack.pushPose();
             matrixStack.translate(f, g, h);
             matrixStack.scale(widthMultiplier, -heightMultiplier, widthMultiplier);
-            SplashParticle.WAVE_MODEL.renderToBuffer(matrixStack, vertexConsumer, light, minU, maxU, minV, maxV, 1.0F, 1.0F, 1.0F, 1.0F);
+            WAVE_MODEL.renderToBuffer(matrixStack, vertexConsumer, light, minU, maxU, minV, maxV, 1.0F, 1.0F, 1.0F, 1.0F);
             matrixStack.popPose();
         }
 
@@ -97,7 +103,7 @@ public class LavaSplashParticle extends TextureSheetParticle {
 
             matrixStack.translate(f, g, h);
             matrixStack.scale(widthMultiplier * 0.5f, -heightMultiplier * 2, widthMultiplier * 0.5f);
-            SplashParticle.WAVE_MODEL.renderToBuffer(matrixStack, vertexConsumer, light, minU, maxU, minV, maxV, 1.0F, 1.0F, 1.0F, 1.0F);
+            WAVE_MODEL.renderToBuffer(matrixStack, vertexConsumer, light, minU, maxU, minV, maxV, 1.0F, 1.0F, 1.0F, 1.0F);
         }
     }
 
