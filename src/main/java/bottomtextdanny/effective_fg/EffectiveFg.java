@@ -1,13 +1,18 @@
 package bottomtextdanny.effective_fg;
 
-import bottomtextdanny.effective_fg.registry.ParticleRegistry;
-import bottomtextdanny.effective_fg.registry.SoundEventRegistry;
-import bottomtextdanny.effective_fg.level.LevelTickHandler;
+import bottomtextdanny.effective_fg.level.LevelHandler;
+import bottomtextdanny.effective_fg.particle_manager.ParticleStitcher;
+import bottomtextdanny.effective_fg.tables.EffectiveFgParticles;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.ForgeConfigSpec;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+
+import java.util.List;
 
 @Mod(EffectiveFg.ID)
 public class EffectiveFg {
@@ -20,20 +25,34 @@ public class EffectiveFg {
     public static final float SPLASH_SPEED_WATER_THRESHOLD = 0.1F;
     public static final float SPLASH_SPEED_LAVA_THRESHOLD = 0.05F;
     public static final String ID = "effective_fg";
-    private static Config CONFIG;
+    private static Config config;
+    private static Object particleHandlers;
 
     public EffectiveFg() {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        MinecraftForge.EVENT_BUS.addListener(LevelTickHandler::worldTickLast);
-        SoundEventRegistry.ENTRIES.register(modEventBus);
-        ParticleRegistry.ENTRIES.register(modEventBus);
 
-        CONFIG = new Config(new ForgeConfigSpec.Builder());
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> EffectiveFg::setupClient);
     }
 
+    @OnlyIn(Dist.CLIENT)
+    private static void setupClient() {
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        particleHandlers = new ParticleStitcher(modEventBus, List.of(
+            EffectiveFgParticles.DROPLET,
+            EffectiveFgParticles.LAVA_SPLASH,
+            EffectiveFgParticles.RIPPLE,
+            EffectiveFgParticles.SPLASH,
+            EffectiveFgParticles.WATERFALL_CLOUD
+        ));
+
+        config = new Config(new ForgeConfigSpec.Builder());
+        MinecraftForge.EVENT_BUS.addListener(LevelHandler::levelTick);
+    }
+
+    @OnlyIn(Dist.CLIENT)
     public static Config config() {
-        if (CONFIG == null)
+        if (config == null)
             throw new IllegalStateException("Config was called before initialization or has changed since!");
-        return CONFIG;
+        return config;
     }
 }

@@ -4,7 +4,7 @@ loaderVersion="[38,)"
 license="All rights reserved"
 [[mods]]
 modId="effective_fg"
-version="1.0"
+version="1.2.4"
 displayName="Effective (Forge)"
 logoFile="effective.png"
 credits="Thanks to doctor4t for letting me port this mod to forge."

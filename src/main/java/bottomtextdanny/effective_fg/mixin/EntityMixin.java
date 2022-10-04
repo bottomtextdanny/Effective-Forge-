@@ -1,12 +1,10 @@
 package bottomtextdanny.effective_fg.mixin;
 
 import bottomtextdanny.effective_fg.EffectiveFg;
-import bottomtextdanny.effective_fg.sound.LinearFadeSound;
 import bottomtextdanny.effective_fg.util.EffectUtil;
-import bottomtextdanny.effective_fg.particletype.SplashParticleOptions;
-import bottomtextdanny.effective_fg.registry.ParticleRegistry;
-import bottomtextdanny.effective_fg.registry.SoundEventRegistry;
-import net.minecraft.client.Minecraft;
+import bottomtextdanny.effective_fg.particle_manager.SplashParticleData;
+import bottomtextdanny.effective_fg.tables.EffectiveFgParticles;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -60,64 +58,72 @@ public abstract class EntityMixin {
 
     @Inject(method = "doWaterSplashEffect", at = @At("TAIL"))
     protected void onSwimmingStart(CallbackInfo callbackInfo) {
-        Level level = this.level;
-        if (level.isClientSide) {
-            Entity entity = !this.getPassengers().isEmpty() && this.getFirstPassenger() != null ? this.getFirstPassenger() : (Entity) (Object) this;
-            float f = entity == (Object) this ? 0.2f : 0.9f;
-            Vec3 vec3d = entity.getDeltaMovement();
-            float g = Math.min(1.0f, (float) Math.sqrt(vec3d.x * vec3d.x * (double) 0.2f + vec3d.y * vec3d.y + vec3d.z * vec3d.z * (double) 0.2f) * f);
-            if (g > EffectiveFg.SPLASH_SPEED_WATER_THRESHOLD) {
-                for (int i = -10; i < 10; i++) {
-                    BlockPos pos = new BlockPos(this.getX(), Math.round(this.getY()) + i, this.getZ());
-                    if (level.getBlockState(pos).getFluidState().isSource()
-                        && level.getBlockState(new BlockPos(this.getX(), Math.round(this.getY()) + i + 1, this.getZ())).isAir()) {
-                        float width = EffectUtil.splashWidth(entity);
-                        float height = EffectUtil.splashHeight(width, entity);
+        if (!(this.level instanceof ClientLevel)) return;
 
-                        if (width > 0.0F) {
-                            level.addParticle(new SplashParticleOptions(ParticleRegistry.SPLASH.get(), width, height), this.getX(), Math.round(this.getY()) + i + 0.9f, this.getZ(), 0, 0, 0);
-                        }
+        ClientLevel level = (ClientLevel) this.level;
+        Entity entity = !this.getPassengers().isEmpty() && this.getFirstPassenger() != null ? this.getFirstPassenger() : (Entity) (Object) this;
+        float f = entity == (Object) this ? 0.2f : 0.9f;
+        Vec3 vec3d = entity.getDeltaMovement();
+        float g = Math.min(1.0f, (float) Math.sqrt(vec3d.x * vec3d.x * (double) 0.2f + vec3d.y * vec3d.y + vec3d.z * vec3d.z * (double) 0.2f) * f);
+        if (g > EffectiveFg.SPLASH_SPEED_WATER_THRESHOLD) {
+            for (int i = -10; i < 10; i++) {
+                BlockPos pos = new BlockPos(this.getX(), Math.round(this.getY()) + i, this.getZ());
+                if (level.getBlockState(pos).getFluidState().isSource()
+                    && level.getBlockState(new BlockPos(this.getX(), Math.round(this.getY()) + i + 1, this.getZ())).isAir()) {
+                    float width = EffectUtil.splashWidth(entity);
+                    float height = EffectUtil.splashHeight(width, entity);
 
-                        EffectUtil.splashSound(this.getX(), Math.round(this.getY()) + i + 0.9f, this.getZ(), g);
-                        break;
+                    if (width > 0.0F) {
+
+                        EffectiveFgParticles.SPLASH.create(
+                            new SplashParticleData(width, height), level,
+                            this.getX(), Math.round(this.getY()) + i + 0.9f, this.getZ(), 0, 0, 0
+                        );
                     }
-                }
-            } else {
-                for (int i = 0; i < this.getBbWidth() * EffectiveFg.SPLASH_WATER_DROPLET_FACTOR; i++) {
-                    Random random = this.random;
-                    level.addParticle(ParticleRegistry.DROPLET.get(), this.getX() + random.nextGaussian() * this.getBbWidth() / 5f, this.getY(), this.getZ() + random.nextGaussian() * this.getBbWidth() / 5f, random.nextGaussian() / 15f, random.nextFloat() / 2.5f, random.nextGaussian() / 15f);
-                }
 
-                EffectUtil.smallSplashSound(this.getX(), this.getY(), this.getZ(), g);
+                    EffectUtil.splashSound(this.getX(), Math.round(this.getY()) + i + 0.9f, this.getZ(), g);
+                    break;
+                }
             }
+        } else {
+            for (int i = 0; i < this.getBbWidth() * EffectiveFg.SPLASH_WATER_DROPLET_FACTOR; i++) {
+                Random random = this.random;
+
+                EffectiveFgParticles.DROPLET.create((ClientLevel) level, this.getX() + random.nextGaussian() * this.getBbWidth() / 5f, this.getY(), this.getZ() + random.nextGaussian() * this.getBbWidth() / 5f, random.nextGaussian() / 15f, random.nextFloat() / 2.5f, random.nextGaussian() / 15f);
+            }
+
+            EffectUtil.smallSplashSound(this.getX(), this.getY(), this.getZ(), g);
         }
     }
 
     @Inject(method = "tick", at = @At("TAIL"))
     public void tick(CallbackInfo callbackInfo) {
-        Level level = this.level;
+        if (!(this.level instanceof ClientLevel)) return;
+
+        ClientLevel level = (ClientLevel) this.level;
         if (!this.onGround && !this.isInWater() && !this.isInLava() && level.getBlockState(this.blockPosition().offset(this.getDeltaMovement().x, this.getDeltaMovement().y, this.getDeltaMovement().z)).getBlock() == Blocks.LAVA) {
-            if (level.isClientSide) {
-                Entity entity = !this.getPassengers().isEmpty() && this.getFirstPassenger() != null ? this.getFirstPassenger() : (Entity) (Object) this;
-                float f = entity == (Object) this ? 0.2f : 0.9f;
-                Vec3 vec3d = entity.getDeltaMovement();
-                float g = Math.min(1.0f, (float) Math.sqrt(vec3d.x * vec3d.x * (double) 0.2f + vec3d.y * vec3d.y + vec3d.z * vec3d.z * (double) 0.2f) * f);
-                if (g > EffectiveFg.SPLASH_SPEED_LAVA_THRESHOLD) {
-                    for (int i = -10; i < 10; i++) {
-                        if (level.getBlockState(new BlockPos(this.getX(), Math.round(this.getY()) + i, this.getZ())).getBlock() == Blocks.LAVA
-                            && level.getBlockState(new BlockPos(this.getX(), Math.round(this.getY()) + i, this.getZ())).getFluidState().isSource()
-                            && level.getBlockState(new BlockPos(this.getX(), Math.round(this.getY()) + i + 1, this.getZ())).isAir()) {
-                            float width = EffectUtil.splashWidth(entity);
-                            float height = EffectUtil.splashHeight(width, entity);
+            Entity entity = !this.getPassengers().isEmpty() && this.getFirstPassenger() != null ? this.getFirstPassenger() : (Entity) (Object) this;
+            float f = entity == (Object) this ? 0.2f : 0.9f;
+            Vec3 vec3d = entity.getDeltaMovement();
+            float g = Math.min(1.0f, (float) Math.sqrt(vec3d.x * vec3d.x * (double) 0.2f + vec3d.y * vec3d.y + vec3d.z * vec3d.z * (double) 0.2f) * f);
+            if (g > EffectiveFg.SPLASH_SPEED_LAVA_THRESHOLD) {
+                for (int i = -10; i < 10; i++) {
+                    if (level.getBlockState(new BlockPos(this.getX(), Math.round(this.getY()) + i, this.getZ())).getBlock() == Blocks.LAVA
+                        && level.getBlockState(new BlockPos(this.getX(), Math.round(this.getY()) + i, this.getZ())).getFluidState().isSource()
+                        && level.getBlockState(new BlockPos(this.getX(), Math.round(this.getY()) + i + 1, this.getZ())).isAir()) {
+                        float width = EffectUtil.splashWidth(entity);
+                        float height = EffectUtil.splashHeight(width, entity);
 
-                            if (width > 0.0F) {
-                                level.addParticle(new SplashParticleOptions(ParticleRegistry.LAVA_SPLASH.get(), width, height), this.getX(), Math.round(this.getY()) + i + 0.9f, this.getZ(), 0, 0, 0);
-                            }
-
-                            level.playLocalSound(this.getX(), Math.round(this.getY()) + i + 0.9f, this.getZ(), SoundEvents.BUCKET_EMPTY_LAVA, SoundSource.AMBIENT, 1.0f, 0.8f, false);
-
-                            break;
+                        if (width > 0.0F) {
+                            EffectiveFgParticles.LAVA_SPLASH.create(
+                                new SplashParticleData(width, height), level,
+                                this.getX(), Math.round(this.getY()) + i + 0.9f, this.getZ(), 0, 0, 0
+                            );
                         }
+
+                        level.playLocalSound(this.getX(), Math.round(this.getY()) + i + 0.9f, this.getZ(), SoundEvents.BUCKET_EMPTY_LAVA, SoundSource.AMBIENT, 1.0f, 0.8f, false);
+
+                        break;
                     }
                 }
             }

@@ -5,8 +5,7 @@ import bottomtextdanny.effective_fg.model.SplashBottomModel;
 import bottomtextdanny.effective_fg.model.SplashModel;
 import bottomtextdanny.effective_fg.model.SplashRimModel;
 import bottomtextdanny.effective_fg.util.ParticleModel;
-import bottomtextdanny.effective_fg.particletype.SplashParticleOptions;
-import bottomtextdanny.effective_fg.registry.ParticleRegistry;
+import bottomtextdanny.effective_fg.tables.EffectiveFgParticles;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
@@ -16,8 +15,6 @@ import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-
-import javax.annotation.Nullable;
 
 public class SplashParticle extends TextureSheetParticle {
     static final ParticleModel WAVE_MODEL = new SplashModel(56);
@@ -33,7 +30,7 @@ public class SplashParticle extends TextureSheetParticle {
     private final float g;
     private final float b;
 
-    protected SplashParticle(ClientLevel level, double x, double y, double z, SpriteSet spriteSet, float width, float height) {
+    public SplashParticle(ClientLevel level, double x, double y, double z, SpriteSet spriteSet, float width, float height) {
         super(level, x, y, z);
         this.sprites = spriteSet;
         this.gravity = 0.0F;
@@ -69,13 +66,28 @@ public class SplashParticle extends TextureSheetParticle {
             this.remove();
         }
 
+        ClientLevel level = this.level;
+
+
         if (this.age == 1) {
             for (int i = 0; i < widthMultiplier * 10f; i++) {
-                this.level.addParticle(ParticleRegistry.DROPLET.get(), this.x + (this.random.nextGaussian() * widthMultiplier / 10f), this.y, this.z + (this.random.nextGaussian() * widthMultiplier / 10f), random.nextGaussian() / 10f * widthMultiplier / 2.5f, random.nextFloat() / 10f + this.heightMultiplier / 2.8f, random.nextGaussian() / 10f * widthMultiplier / 2.5f);
+                EffectiveFgParticles.DROPLET.create(level,
+                    this.x + (this.random.nextGaussian() * widthMultiplier / 10f),
+                    this.y,
+                    this.z + (this.random.nextGaussian() * widthMultiplier / 10f),
+                    random.nextGaussian() / 10f * widthMultiplier / 2.5f,
+                    random.nextFloat() / 10f + this.heightMultiplier / 2.8f,
+                    random.nextGaussian() / 10f * widthMultiplier / 2.5f);
             }
         } else if (this.age == wave2Start) {
             for (int i = 0; i < widthMultiplier * 5f; i++) {
-                this.level.addParticle(ParticleRegistry.DROPLET.get(), this.x + (this.random.nextGaussian() * widthMultiplier / 10f * .5f), this.y, this.z + (this.random.nextGaussian() * widthMultiplier / 10f * .5f), random.nextGaussian() / 10f * widthMultiplier / 5f, random.nextFloat() / 10f + this.heightMultiplier / 2.2f, random.nextGaussian() / 10f * widthMultiplier / 5f);
+                EffectiveFgParticles.DROPLET.create(level,
+                    this.x + (this.random.nextGaussian() * widthMultiplier / 10f * .5f),
+                    this.y,
+                    this.z + (this.random.nextGaussian() * widthMultiplier / 10f * .5f),
+                    random.nextGaussian() / 10f * widthMultiplier / 5f,
+                    random.nextFloat() / 10f + this.heightMultiplier / 2.2f,
+                    random.nextGaussian() / 10f * widthMultiplier / 5f);
             }
         }
     }
@@ -161,20 +173,6 @@ public class SplashParticle extends TextureSheetParticle {
     public void setSprite(int index) {
         if (!this.removed) {
             this.setSprite(sprites.get(index, 12));
-        }
-    }
-    
-    public static class Factory implements ParticleProvider<SplashParticleOptions> {
-        private final SpriteSet spriteSet;
-
-        public Factory(SpriteSet spriteProvider) {
-            this.spriteSet = spriteProvider;
-        }
-
-        @Nullable
-        @Override
-        public Particle createParticle(SplashParticleOptions parameters, ClientLevel level, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
-            return new SplashParticle(level, x, y, z, this.spriteSet, parameters.width, parameters.height);
         }
     }
 }
