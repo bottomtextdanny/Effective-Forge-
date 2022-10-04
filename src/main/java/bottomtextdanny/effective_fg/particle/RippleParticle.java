@@ -15,7 +15,7 @@ import java.util.Random;
 public class RippleParticle extends TextureSheetParticle {
     private final SpriteSet spriteProvider;
 
-    private RippleParticle(ClientLevel world, double x, double y, double z, double xd, double yd, double zd, SpriteSet spriteProvider) {
+    public RippleParticle(ClientLevel world, double x, double y, double z, double xd, double yd, double zd, SpriteSet spriteProvider) {
         super(world, x, y, z, xd, yd, zd);
 
         this.xd = 0;
@@ -84,18 +84,5 @@ public class RippleParticle extends TextureSheetParticle {
         vertexConsumer.vertex(Vector3fs[1].x(), Vector3fs[1].y(), Vector3fs[1].z()).uv(maxU, minV).color(rCol, gCol, bCol, alpha).uv2(l).endVertex();
         vertexConsumer.vertex(Vector3fs[2].x(), Vector3fs[2].y(), Vector3fs[2].z()).uv(minU, minV).color(rCol, gCol, bCol, alpha).uv2(l).endVertex();
         vertexConsumer.vertex(Vector3fs[3].x(), Vector3fs[3].y(), Vector3fs[3].z()).uv(minU, maxV).color(rCol, gCol, bCol, alpha).uv2(l).endVertex();
-    }
-    
-    public static class Factory implements ParticleProvider<SimpleParticleType> {
-        private final SpriteSet spriteProvider;
-
-        public Factory(SpriteSet spriteProvider) {
-            this.spriteProvider = spriteProvider;
-        }
-
-        @Override
-        public Particle createParticle(SimpleParticleType parameters, ClientLevel world, double x, double y, double z, double xd, double yd, double zd) {
-            return new RippleParticle(world, x, y, z, xd, yd, zd, this.spriteProvider);
-        }
     }
 }

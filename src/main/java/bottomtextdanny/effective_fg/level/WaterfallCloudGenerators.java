@@ -1,13 +1,12 @@
 package bottomtextdanny.effective_fg.level;
 
 import bottomtextdanny.effective_fg.EffectiveFg;
-import bottomtextdanny.effective_fg.registry.ParticleRegistry;
-import bottomtextdanny.effective_fg.registry.SoundEventRegistry;
+import bottomtextdanny.effective_fg.tables.EffectiveFgParticles;
+import bottomtextdanny.effective_fg.tables.EffectiveFgSounds;
 import bottomtextdanny.effective_fg.sound.LinearFadeSound;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
@@ -39,16 +38,16 @@ public class WaterfallCloudGenerators {
         ClientLevel level = instance.level;
         Camera camera = instance.getEntityRenderDispatcher().camera;
 
-
         if (instance.isPaused() || level == null || camera == null) return;
 
-        if (level != levelO) GENERATORS.clear();
-
         BlockPos pos = camera.getBlockPosition();
+
+        if (level != levelO) GENERATORS.clear();
 
         levelO = level;
 
         RandomSource random = level.random;
+
         SoundManager soundManager = instance.getSoundManager();
         float cascadeRange = EffectiveFg.config().cascadeSoundRange.get().floatValue();
         float cascadeRangeSquared = cascadeRange * cascadeRange;
@@ -87,11 +86,20 @@ public class WaterfallCloudGenerators {
             offsetZ = random.nextBoolean() ? offsetZ : -offsetZ;
 
             if (((int)level.getGameTime()) % (soundCounter[0] * 7) == 0 && dist < cascadeRangeSquared) {
-                soundManager.play(new LinearFadeSound(SoundEventRegistry.AMBIENCE_WATERFALL.get(), SoundSource.AMBIENT, cascadeRange, 1.0F, blockPos.getX(), blockPos.getY(), blockPos.getZ()));
+                soundManager.play(new LinearFadeSound(EffectiveFgSounds.AMBIENCE_WATERFALL, SoundSource.AMBIENT, cascadeRange, 1.0F, blockPos.getX(), blockPos.getY(), blockPos.getZ()));
             }
 
-            if (random.nextFloat() < EffectiveFg.config().cascadeParticleAmountMultiplier.get())
-                level.addParticle(ParticleRegistry.WATERFALL_CLOUD.get(), blockPos.getX() + 0.5 + offsetX, blockPos.getY() + 1.0 + random.nextFloat(), blockPos.getZ() + 0.5 + offsetZ, random.nextFloat() / 5.0 * Math.signum(offsetX), random.nextFloat() / 5.0, random.nextFloat() / 5.0 * Math.signum(offsetZ));
+            if (random.nextFloat() < EffectiveFg.config().cascadeParticleAmountMultiplier.get()) {
+                EffectiveFgParticles.WATERFALL_CLOUD.create(level,
+                    blockPos.getX() + 0.5 + offsetX,
+                    blockPos.getY() + 1.0 + random.nextFloat(),
+                    blockPos.getZ() + 0.5 + offsetZ,
+                    random.nextFloat() / 5.0 * Math.signum(offsetX),
+                    random.nextFloat() / 5.0,
+                    random.nextFloat() / 5.0 * Math.signum(offsetZ)
+                );
+            }
+
 
             soundCounter[0] += random.nextInt(2) + 1;
         });

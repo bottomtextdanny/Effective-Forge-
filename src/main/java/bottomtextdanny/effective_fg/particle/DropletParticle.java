@@ -1,6 +1,6 @@
 package bottomtextdanny.effective_fg.particle;
 
-import bottomtextdanny.effective_fg.registry.ParticleRegistry;
+import bottomtextdanny.effective_fg.tables.EffectiveFgParticles;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Quaternion;
 import com.mojang.math.Vector3f;
@@ -16,7 +16,7 @@ import net.minecraft.world.phys.Vec3;
 public class DropletParticle extends TextureSheetParticle {
     private final SpriteSet sprites;
 
-    private DropletParticle(ClientLevel level, double x, double y, double z, double xd, double yd, double zd, SpriteSet spriteProvider) {
+    public DropletParticle(ClientLevel level, double x, double y, double z, double xd, double yd, double zd, SpriteSet spriteProvider) {
         super(level, x, y, z, xd, yd, zd);
 
         this.xd = xd;
@@ -42,16 +42,21 @@ public class DropletParticle extends TextureSheetParticle {
 
         if (this.age++ >= this.lifetime) {
             this.remove();
+            return;
         }
 
-        if (this.onGround || (this.age > 5 && this.level.getBlockState(new BlockPos(this.x, this.y + this.yd, this.z)).getBlock() == Blocks.WATER)) {
+        ClientLevel level = this.level;
+
+        if (this.onGround || (this.age > 5 && level.getBlockState(new BlockPos(this.x, this.y + this.yd, this.z)).getBlock() == Blocks.WATER)) {
             this.remove();
         }
 
-        if (this.level.getBlockState(new BlockPos(this.x, this.y + this.yd, this.z)).getBlock() == Blocks.WATER && this.level.getBlockState(new BlockPos(this.x, this.y, this.z)).isAir()) {
+        if (level.getBlockState(new BlockPos(this.x, this.y + this.yd, this.z)).getBlock() == Blocks.WATER && level.getBlockState(new BlockPos(this.x, this.y, this.z)).isAir()) {
             for (int i = 0; i > -10; i--) {
-                if (this.level.getBlockState(new BlockPos(this.x, Math.round(this.y) + i, this.z)).getBlock() == Blocks.WATER && this.level.getBlockState(new BlockPos(this.x, Math.round(this.y) + i, this.z)).getFluidState().isSource() && this.level.getBlockState(new BlockPos(this.x, Math.round(this.y) + i + 1, this.z)).isAir()) {
-                    this.level.addParticle(ParticleRegistry.RIPPLE.get(), this.x, Math.round(this.y) + i + 0.9f, this.z, 0, 0, 0);
+                if (level.getBlockState(new BlockPos(this.x, Math.round(this.y) + i, this.z)).getBlock() == Blocks.WATER && level.getBlockState(new BlockPos(this.x, Math.round(this.y) + i, this.z)).getFluidState().isSource() && level.getBlockState(new BlockPos(this.x, Math.round(this.y) + i + 1, this.z)).isAir()) {
+                    EffectiveFgParticles.RIPPLE.create(level,
+                        this.x, Math.round(this.y) + i + 0.9f, this.z,
+                        0, 0, 0);
                     break;
                 }
             }

@@ -2,8 +2,7 @@ package bottomtextdanny.effective_fg.particle;
 
 import bottomtextdanny.effective_fg.model.SplashBottomModel;
 import bottomtextdanny.effective_fg.model.SplashModel;
-import bottomtextdanny.effective_fg.model.SplashRimModel;
-import bottomtextdanny.effective_fg.particletype.SplashParticleOptions;
+import bottomtextdanny.effective_fg.particle_manager.SplashParticleData;
 import bottomtextdanny.effective_fg.util.ParticleModel;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -21,12 +20,12 @@ public class LavaSplashParticle extends TextureSheetParticle {
     static final ParticleModel WAVE_BOTTOM_MODEL = new SplashBottomModel(28);
     private final SpriteSet sprites;
     private float widthMultiplier;
-    private float heightMultiplier;
-    private int wave1End;
-    private int wave2Start;
-    private int wave2End;
+    private final float heightMultiplier;
+    private final int wave1End;
+    private final int wave2Start;
+    private final int wave2End;
 
-    protected LavaSplashParticle(ClientLevel level, double x, double y, double z, SpriteSet spriteSet, float width, float height) {
+    public LavaSplashParticle(ClientLevel level, double x, double y, double z, SpriteSet spriteSet, float width, float height) {
         super(level, x, y, z);
         this.sprites = spriteSet;
         this.gravity = 0.0F;
@@ -110,20 +109,6 @@ public class LavaSplashParticle extends TextureSheetParticle {
     public void setSprite(int index) {
         if (!this.removed) {
             this.setSprite(sprites.get(index, 12));
-        }
-    }
-
-    public static class Factory implements ParticleProvider<SplashParticleOptions> {
-        private final SpriteSet spriteSet;
-
-        public Factory(SpriteSet spriteProvider) {
-            this.spriteSet = spriteProvider;
-        }
-
-        @Nullable
-        @Override
-        public Particle createParticle(SplashParticleOptions parameters, ClientLevel level, double x, double y, double z, double velocityX, double velocityY, double velocityZ) {
-            return new LavaSplashParticle(level, x, y, z, spriteSet, parameters.width, parameters.height);
         }
     }
 }
