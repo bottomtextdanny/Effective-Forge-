@@ -23,6 +23,11 @@ repositories{
     }
 
     maven {
+        name "modrinth"
+        url "https://api.modrinth.com/maven"
+    }
+
+    maven {
         url "https://www.cursemaven.com"
     }
     mavenCentral()
@@ -88,8 +93,11 @@ mixin {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.18.2-40.1.80'
+    minecraft 'net.minecraftforge:forge:1.18.2-40.2.10'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
+    compileOnly fg.deobf("maven.modrinth:rubidium:${project.rubidium_version}")
+    //runtimeOnly fg.deobf("maven.modrinth:rubidium:${project.rubidium_version}") //for testing
 }
 
 jar {
