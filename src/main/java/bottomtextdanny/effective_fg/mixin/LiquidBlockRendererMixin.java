@@ -31,7 +31,7 @@ public class LiquidBlockRendererMixin {
             && stateUp.getFluidState().getOwnHeight() >= 0.77f
             && stateDoubleUp.is(Blocks.WATER) && !stateDoubleUp.getFluidState().isSource()) {
             if (!WaterfallCloudGenerators.isResolvingWaterfalls()) {
-                WaterfallCloudGenerators.addGenerator(new BlockPos(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f));
+                WaterfallCloudGenerators.addGenerator(BlockPos.containing(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f));
             }
         }
     }

@@ -2,8 +2,7 @@ package bottomtextdanny.effective_fg.particle;
 
 import bottomtextdanny.effective_fg.tables.EffectiveFgParticles;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
@@ -12,6 +11,8 @@ import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 public class DropletParticle extends TextureSheetParticle {
     private final SpriteSet sprites;
@@ -47,13 +48,13 @@ public class DropletParticle extends TextureSheetParticle {
 
         ClientLevel level = this.level;
 
-        if (this.onGround || (this.age > 5 && level.getBlockState(new BlockPos(this.x, this.y + this.yd, this.z)).getBlock() == Blocks.WATER)) {
+        if (this.onGround || (this.age > 5 && level.getBlockState(BlockPos.containing(this.x, this.y + this.yd, this.z)).getBlock() == Blocks.WATER)) {
             this.remove();
         }
 
-        if (level.getBlockState(new BlockPos(this.x, this.y + this.yd, this.z)).getBlock() == Blocks.WATER && level.getBlockState(new BlockPos(this.x, this.y, this.z)).isAir()) {
+        if (level.getBlockState(BlockPos.containing(this.x, this.y + this.yd, this.z)).getBlock() == Blocks.WATER && level.getBlockState(BlockPos.containing(this.x, this.y, this.z)).isAir()) {
             for (int i = 0; i > -10; i--) {
-                if (level.getBlockState(new BlockPos(this.x, Math.round(this.y) + i, this.z)).getBlock() == Blocks.WATER && level.getBlockState(new BlockPos(this.x, Math.round(this.y) + i, this.z)).getFluidState().isSource() && level.getBlockState(new BlockPos(this.x, Math.round(this.y) + i + 1, this.z)).isAir()) {
+                if (level.getBlockState(BlockPos.containing(this.x, Math.round(this.y) + i, this.z)).getBlock() == Blocks.WATER && level.getBlockState(BlockPos.containing(this.x, Math.round(this.y) + i, this.z)).getFluidState().isSource() && level.getBlockState(BlockPos.containing(this.x, Math.round(this.y) + i + 1, this.z)).isAir()) {
                     EffectiveFgParticles.RIPPLE.create(level,
                         this.x, Math.round(this.y) + i + 0.9f, this.z,
                         0, 0, 0);
@@ -78,17 +79,17 @@ public class DropletParticle extends TextureSheetParticle {
         float f = (float) (Mth.lerp(tickDelta, this.xo, this.x) - vec3d.x());
         float g = (float) (Mth.lerp(tickDelta, this.yo, this.y) - vec3d.y());
         float h = (float) (Mth.lerp(tickDelta, this.zo, this.z) - vec3d.z());
-        Quaternion quaternion2;
+        Quaternionf quaternion2;
         if (this.roll == 0.0F) {
             quaternion2 = camera.rotation();
         } else {
-            quaternion2 = new Quaternion(camera.rotation());
+            quaternion2 = new Quaternionf(camera.rotation());
             float i = Mth.lerp(tickDelta, this.oRoll, this.roll);
-            quaternion2.mul(Vector3f.ZP.rotationDegrees(i));
+            quaternion2.mul(Axis.ZP.rotationDegrees(i));
         }
 
         Vector3f vec3f = new Vector3f(-1.0F, -1.0F, 0.0F);
-        vec3f.transform(quaternion2);
+        vec3f = quaternion2.transform(vec3f);
         Vector3f[] Vec3fs = new Vector3f[]{
                 new Vector3f(-1.0F, -1.0F, 0.0F),
                 new Vector3f(-1.0F, 1.0F, 0.0F),
@@ -98,7 +99,7 @@ public class DropletParticle extends TextureSheetParticle {
 
         for (int k = 0; k < 4; ++k) {
             Vector3f Vec3f2 = Vec3fs[k];
-            Vec3f2.transform(quaternion2);
+            Vec3f2 = quaternion2.transform(Vec3f2);
             Vec3f2.mul(j);
             Vec3f2.add(f, g, h);
         }

@@ -68,9 +68,9 @@ public abstract class EntityMixin {
         float g = Math.min(1.0f, (float) Math.sqrt(vec3d.x * vec3d.x * (double) 0.2f + vec3d.y * vec3d.y + vec3d.z * vec3d.z * (double) 0.2f) * f);
         if (g > EffectiveFg.SPLASH_SPEED_WATER_THRESHOLD) {
             for (int i = -10; i < 10; i++) {
-                BlockPos pos = new BlockPos(this.getX(), Math.round(this.getY()) + i, this.getZ());
+                BlockPos pos = BlockPos.containing(this.getX(), Math.round(this.getY()) + i, this.getZ());
                 if (level.getBlockState(pos).getFluidState().isSource()
-                    && level.getBlockState(new BlockPos(this.getX(), Math.round(this.getY()) + i + 1, this.getZ())).isAir()) {
+                    && level.getBlockState(BlockPos.containing(this.getX(), Math.round(this.getY()) + i + 1, this.getZ())).isAir()) {
                     float width = EffectUtil.splashWidth(entity);
                     float height = EffectUtil.splashHeight(width, entity);
 
@@ -102,16 +102,16 @@ public abstract class EntityMixin {
         if (!(this.level instanceof ClientLevel)) return;
 
         ClientLevel level = (ClientLevel) this.level;
-        if (!this.onGround && !this.isInWater() && !this.isInLava() && level.getBlockState(this.blockPosition().offset(this.getDeltaMovement().x, this.getDeltaMovement().y, this.getDeltaMovement().z)).getBlock() == Blocks.LAVA) {
+        if (!this.onGround && !this.isInWater() && !this.isInLava() && level.getBlockState(this.blockPosition().offset((int) this.getDeltaMovement().x, (int) this.getDeltaMovement().y, (int) this.getDeltaMovement().z)).getBlock() == Blocks.LAVA) {
             Entity entity = !this.getPassengers().isEmpty() && this.getFirstPassenger() != null ? this.getFirstPassenger() : (Entity) (Object) this;
             float f = entity == (Object) this ? 0.2f : 0.9f;
             Vec3 vec3d = entity.getDeltaMovement();
             float g = Math.min(1.0f, (float) Math.sqrt(vec3d.x * vec3d.x * (double) 0.2f + vec3d.y * vec3d.y + vec3d.z * vec3d.z * (double) 0.2f) * f);
             if (g > EffectiveFg.SPLASH_SPEED_LAVA_THRESHOLD) {
                 for (int i = -10; i < 10; i++) {
-                    if (level.getBlockState(new BlockPos(this.getX(), Math.round(this.getY()) + i, this.getZ())).getBlock() == Blocks.LAVA
-                        && level.getBlockState(new BlockPos(this.getX(), Math.round(this.getY()) + i, this.getZ())).getFluidState().isSource()
-                        && level.getBlockState(new BlockPos(this.getX(), Math.round(this.getY()) + i + 1, this.getZ())).isAir()) {
+                    if (level.getBlockState(BlockPos.containing(this.getX(), Math.round(this.getY()) + i, this.getZ())).getBlock() == Blocks.LAVA
+                        && level.getBlockState(BlockPos.containing(this.getX(), Math.round(this.getY()) + i, this.getZ())).getFluidState().isSource()
+                        && level.getBlockState(BlockPos.containing(this.getX(), Math.round(this.getY()) + i + 1, this.getZ())).isAir()) {
                         float width = EffectUtil.splashWidth(entity);
                         float height = EffectUtil.splashHeight(width, entity);
 

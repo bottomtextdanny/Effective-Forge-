@@ -12,16 +12,7 @@ public class ParticleStitcher {
 
 	public ParticleStitcher(IEventBus bus, List<ParticleManager<?>> particleManagers) {
 		this.particleManagers = ImmutableList.copyOf(particleManagers);
-		bus.addListener(this::onTextureAtlasPre);
 		bus.addListener(this::onTextureAtlasPost);
-	}
-
-	private void onTextureAtlasPre(TextureStitchEvent.Pre event){
-		if (event.getAtlas().location().equals(TextureAtlas.LOCATION_PARTICLES)) {
-			particleManagers.forEach(manager -> {
-				manager.textures.forEach(event::addSprite);
-			});
-		}
 	}
 
 	private void onTextureAtlasPost(TextureStitchEvent.Post event){
