@@ -15,6 +15,10 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import com.mojang.blaze3d.vertex.VertexConsumer;
+import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.material.FluidState;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,6 +27,22 @@ public class WaterfallCloudGenerators {
     public static final Set<BlockPos> GENERATORS = new HashSet<>();
     private static boolean resolvingWaterfalls;
     private static Level levelO = null;
+
+    public static void onRenderFluid(BlockAndTintGetter level, BlockPos pos, FluidState fluidState) {
+        if (!EffectiveFg.config().cascades.get()) return;
+
+        BlockState stateDoubleUp = level.getBlockState(pos.offset(0, 2, 0));
+        BlockState stateUp = level.getBlockState(pos.offset(0, 1, 0));
+        if (fluidState.isSource()
+                && stateUp.getBlock() == Blocks.WATER
+                && !stateUp.getFluidState().isSource()
+                && stateUp.getFluidState().getOwnHeight() >= 0.77f
+                && stateDoubleUp.is(Blocks.WATER) && !stateDoubleUp.getFluidState().isSource()) {
+            if (!WaterfallCloudGenerators.isResolvingWaterfalls()) {
+                addGenerator(BlockPos.containing(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f));
+            }
+        }
+    }
 
     public static void addGenerator(BlockPos blockPos) {
         GENERATORS.add(blockPos);

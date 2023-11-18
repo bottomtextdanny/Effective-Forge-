@@ -20,19 +20,6 @@ public class LiquidBlockRendererMixin {
 
     @Inject(method = "tesselate", at = @At("TAIL"))
     public void renderFluid(BlockAndTintGetter level, BlockPos pos, VertexConsumer buffer, BlockState state, FluidState fluidState, CallbackInfo ci) {
-        if (!EffectiveFg.config().cascades.get()) return;
-
-        BlockState stateDoubleUp = level.getBlockState(pos.offset(0, 2, 0));
-        BlockState stateUp = level.getBlockState(pos.offset(0, 1, 0));
-        if (state.getBlock() == Blocks.WATER
-            && fluidState.isSource()
-            && stateUp.getBlock() == Blocks.WATER
-            && !stateUp.getFluidState().isSource()
-            && stateUp.getFluidState().getOwnHeight() >= 0.77f
-            && stateDoubleUp.is(Blocks.WATER) && !stateDoubleUp.getFluidState().isSource()) {
-            if (!WaterfallCloudGenerators.isResolvingWaterfalls()) {
-                WaterfallCloudGenerators.addGenerator(BlockPos.containing(pos.getX() + 0.5f, pos.getY() + 0.5f, pos.getZ() + 0.5f));
-            }
-        }
+        WaterfallCloudGenerators.onRenderFluid(level, pos, fluidState);
     }
 }

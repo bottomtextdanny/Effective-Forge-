@@ -24,3 +24,9 @@ A client-side mod adding ambient and environmental interaction effects to enhanc
     versionRange="[1.19,)"
     ordering="NONE"
     side="CLIENT"
+[[dependencies.effective_fg]]
+    modId="rubidium"
+    mandatory=false
+    versionRange="[0.7.0,)"
+    ordering="AFTER"
+    side="CLIENT"
