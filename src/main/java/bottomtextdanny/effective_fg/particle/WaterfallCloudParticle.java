@@ -53,7 +53,7 @@ public class WaterfallCloudParticle extends TextureSheetParticle {
                 this.zd *= 0.5f;
             }
 
-            if (this.onGround || (this.age > 10 && this.level.getBlockState(new BlockPos(this.x, this.y + this.yd, this.z)).getBlock() == Blocks.WATER)) {
+            if (this.onGround || (this.age > 10 && this.level.getBlockState(BlockPos.containing(this.x, this.y + this.yd, this.z)).getBlock() == Blocks.WATER)) {
                 this.alpha -= 0.1f;
                 this.xd *= 0.5f;
                 this.yd *= 0.5f;
@@ -64,7 +64,7 @@ public class WaterfallCloudParticle extends TextureSheetParticle {
                 this.remove();
             }
 
-            if (this.level.getBlockState(new BlockPos(this.x, this.y + this.yd, this.z)).getBlock() == Blocks.WATER && this.level.getBlockState(new BlockPos(this.x, this.y, this.z)).isAir()) {
+            if (this.level.getBlockState(BlockPos.containing(this.x, this.y + this.yd, this.z)).getBlock() == Blocks.WATER && this.level.getBlockState(BlockPos.containing(this.x, this.y, this.z)).isAir()) {
                 this.xd *= 0.9;
                 this.yd *= 0.9;
                 this.zd *= 0.9;

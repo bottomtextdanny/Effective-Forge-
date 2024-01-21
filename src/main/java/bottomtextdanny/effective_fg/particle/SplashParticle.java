@@ -37,7 +37,7 @@ public class SplashParticle extends TextureSheetParticle {
         this.widthMultiplier = width;
         this.heightMultiplier = height;
 
-        int waterColor = BiomeColors.getAverageWaterColor(level, new BlockPos(x, y, z));
+        int waterColor = BiomeColors.getAverageWaterColor(level, BlockPos.containing(x, y, z));
 
         r = (float) (waterColor >> 16 & 0xFF) / 255.0f;
         g = (float) (waterColor >> 8 & 0xFF) / 255.0f;

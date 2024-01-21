@@ -1,14 +1,15 @@
 package bottomtextdanny.effective_fg.particle;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Quaternion;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.Random;
 
@@ -53,23 +54,25 @@ public class RippleParticle extends TextureSheetParticle {
         float f = (float) (Mth.lerp(tickDelta, this.xo, this.x) - vec3d.x());
         float g = (float) (Mth.lerp(tickDelta, this.yo, this.y) - vec3d.y());
         float h = (float) (Mth.lerp(tickDelta, this.zo, this.z) - vec3d.z());
-        Quaternion quaternion2;
+        Quaternionf quaternion2;
         if (this.roll == 0.0F) {
             quaternion2 = camera.rotation();
         } else {
-            quaternion2 = new Quaternion(camera.rotation());
+            quaternion2 = new Quaternionf(camera.rotation());
             float i = Mth.lerp(tickDelta, this.oRoll, this.roll);
-            quaternion2.mul(Vector3f.ZP.rotationDegrees(i));
+            quaternion2.mul(Axis.ZP.rotationDegrees(i));
         }
 
         Vector3f Vector3f = new Vector3f(-1.0F, -1.0F, 0.0F);
-        Vector3f.transform(quaternion2);
+        Vector3f = quaternion2.transform(Vector3f);
         Vector3f[] Vector3fs = new Vector3f[]{new Vector3f(-1.0F, -1.0F, 0.0F), new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F), new Vector3f(1.0F, -1.0F, 0.0F)};
         float j = this.getQuadSize(tickDelta);
 
         for (int k = 0; k < 4; ++k) {
+            Quaternionf quaternion = new Quaternionf();
+            quaternion.rotateX(Mth.PI / 2f);
             Vector3f Vector3f2 = Vector3fs[k];
-            Vector3f2.transform(new Quaternion(90f, 0f, 0f, true));
+            Vector3f2 = quaternion.transform(Vector3f2);
             Vector3f2.mul(j);
             Vector3f2.add(f, g, h);
         }

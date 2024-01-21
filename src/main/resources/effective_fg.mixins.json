@@ -7,7 +7,8 @@
   "client": [
     "EntityMixin",
     "LiquidBlockRendererMixin",
-    "WaterFluidMixin"
+    "WaterFluidMixin",
+    "integration.rubidium.FluidRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

@@ -2,15 +2,16 @@ package bottomtextdanny.effective_fg.util;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Matrix3f;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
-import com.mojang.math.Vector4f;
+import com.mojang.math.Axis;
+import org.joml.Matrix3f;
+import org.joml.Matrix4f;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectList;
 import net.minecraft.core.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Vector3f;
+import org.joml.Vector4f;
 
 import java.util.function.BiConsumer;
 
@@ -51,15 +52,15 @@ public class ParticleVoxel {
 
         matrixStackIn.translate((double)(this.x / 16.0F), (double)(this.y / 16.0F), (double)(this.z / 16.0F));
         if (this.zRot != 0.0F) {
-            matrixStackIn.mulPose(Vector3f.ZP.rotation(this.zRot));
+            matrixStackIn.mulPose(Axis.ZP.rotation(this.zRot));
         }
 
         if (this.yRot != 0.0F) {
-            matrixStackIn.mulPose(Vector3f.YP.rotation(this.yRot));
+            matrixStackIn.mulPose(Axis.YP.rotation(this.yRot));
         }
 
         if (this.xRot != 0.0F) {
-            matrixStackIn.mulPose(Vector3f.XP.rotation(this.xRot));
+            matrixStackIn.mulPose(Axis.XP.rotation(this.xRot));
         }
     }
 
@@ -185,15 +186,15 @@ public class ParticleVoxel {
     public void translateRotate(PoseStack matrixStackIn) {
         matrixStackIn.translate((double)(this.x / 16.0F), (double)(this.y / 16.0F), (double)(this.z / 16.0F));
         if (this.zRot != 0.0F) {
-            matrixStackIn.mulPose(Vector3f.ZP.rotation(this.zRot));
+            matrixStackIn.mulPose(Axis.ZP.rotation(this.zRot));
         }
 
         if (this.yRot != 0.0F) {
-            matrixStackIn.mulPose(Vector3f.YP.rotation(this.yRot));
+            matrixStackIn.mulPose(Axis.YP.rotation(this.yRot));
         }
 
         if (this.xRot != 0.0F) {
-            matrixStackIn.mulPose(Vector3f.XP.rotation(this.xRot));
+            matrixStackIn.mulPose(Axis.XP.rotation(this.xRot));
         }
 
     }
@@ -204,8 +205,8 @@ public class ParticleVoxel {
 
         for (ModelBox modelrenderer$modelbox : this.cubeList) {
             for (TexturedQuad modelrenderer$texturedquad : modelrenderer$modelbox.quads) {
-                Vector3f vector3f = modelrenderer$texturedquad.normal.copy();
-                vector3f.transform(matrix3f);
+                Vector3f vector3f = new Vector3f(modelrenderer$texturedquad.normal);
+                vector3f = matrix3f.transform(vector3f);
                 float f = vector3f.x();
                 float f1 = vector3f.y();
                 float f2 = vector3f.z();
@@ -217,7 +218,7 @@ public class ParticleVoxel {
                     float f4 = positiontexturevertex.position.y() / 16.0F;
                     float f5 = positiontexturevertex.position.z() / 16.0F;
                     Vector4f vector4f = new Vector4f(f3, f4, f5, 1.0F);
-                    vector4f.transform(matrix4f);
+                    vector4f = matrix4f.transform(vector4f);
 
                     float finalU = ((u1 - u0) * positiontexturevertex.textureU) + u0;
                     float finalV = ((v1 - v0) * positiontexturevertex.textureV) + v0;
@@ -240,7 +241,7 @@ public class ParticleVoxel {
                     float f4 = positiontexturevertex.position.y() / 16.0F;
                     float f5 = positiontexturevertex.position.z() / 16.0F;
                     Vector4f vector4f = new Vector4f(f3, f4, f5, 1.0F);
-                    vector4f.transform(matrix4f);
+                    vector4f = matrix4f.transform(vector4f);
 
                     float finalU = ((u1 - u0) * positiontexturevertex.textureU) + u0;
                     float finalV = ((v1 - v0) * positiontexturevertex.textureV) + v0;
@@ -339,7 +340,7 @@ public class ParticleVoxel {
                 x = f3;
             }
 
-            
+
             PositionTextureVertex modelrenderer$positiontexturevertex7 = new PositionTextureVertex(x, y, zPlusDepth, 0.0F, 8.0F);
             PositionTextureVertex modelrenderer$positiontexturevertex =  new PositionTextureVertex(xPlusWidth, y, zPlusDepth, 8.0F, 0.0F);
             PositionTextureVertex modelrenderer$positiontexturevertex1 = new PositionTextureVertex(xPlusWidth, yPlusHeight, zPlusDepth, 0.0F, 0.0F);

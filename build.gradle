@@ -5,7 +5,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1+', changing: true
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '[6.0,6.2)', changing: true
         classpath group: 'org.spongepowered', name: 'mixingradle', version: '0.7-SNAPSHOT'
     }
 }
@@ -20,6 +20,10 @@ repositories{
     maven {
         name = "ModMaven"
         url = "https://modmaven.k-4u.nl"
+    }
+    maven {
+        name "modrinth"
+        url "https://api.modrinth.com/maven"
     }
 
     maven {
@@ -38,7 +42,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    mappings channel: "official", version: "1.19.2"
+    mappings channel: "official", version: "1.20.1"
 
     runs {
 
@@ -88,8 +92,11 @@ mixin {
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
 dependencies {
-    minecraft 'net.minecraftforge:forge:1.19.2-43.1.25'
+    minecraft 'net.minecraftforge:forge:1.20.1-47.1.47'
     annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
+    compileOnly fg.deobf("maven.modrinth:rubidium:0.7.1")
+    runtimeOnly fg.deobf("maven.modrinth:rubidium:0.7.1") //for testing
 }
 
 jar {
@@ -120,4 +127,9 @@ publishing {
             url "file:///${project.projectDir}/mcmodsrepo"
         }
     }
+}
+
+wrapper {
+    gradleVersion = '8.1.1'
+    distributionType = Wrapper.DistributionType.BIN
 }
